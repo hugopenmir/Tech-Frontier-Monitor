@@ -208,15 +208,38 @@
   }
   #depthhelp.show{display:block}
 
-  /* ---------- X panel ---------- */
+  /* ---------- X panel: muro de tarjetas, identidad propia ---------- */
+  .panel.xpanel{background:#0A0E14}
+  .panel.xpanel .panel-h{background:#0D1320}
+  .xmark{
+    font-size:15px;font-weight:700;width:18px;text-align:center;
+    color:var(--text);flex:none;font-family:var(--mono);
+  }
   .panel-b.cols{
-    column-count:3;column-gap:0;max-height:520px;
+    column-count:3;column-gap:12px;max-height:560px;padding:12px;
   }
   @media(max-width:1100px){.panel-b.cols{column-count:1}}
-  .panel-b.cols .item{break-inside:avoid}
+  .item.tweet{
+    break-inside:avoid;display:block;
+    background:var(--panel2);
+    border:1px solid var(--line);border-left:1px solid var(--line);
+    border-radius:8px;margin:0 0 12px;padding:11px 13px;
+  }
+  .item.tweet.r-china{border-top:2px solid var(--china)}
+  .item.tweet.r-us{border-top:2px solid var(--us)}
+  .item.tweet.r-eu{border-top:2px solid var(--eu)}
+  .item.tweet.r-global{border-top:2px solid #3A4A5C}
+  .item.tweet .meta{margin-bottom:7px}
+  .av{
+    width:22px;height:22px;border-radius:50%;flex:none;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:9px;font-weight:600;color:#0D1219;
+  }
+  .item.tweet .handle{color:var(--muted);font-weight:400}
   .item.tweet .tw{
-    -webkit-line-clamp:6;
-    color:var(--text);font-size:13.5px;line-height:1.5;
+    -webkit-line-clamp:7;
+    color:var(--text);font-family:var(--mono);
+    font-size:12px;line-height:1.6;margin-top:0;
   }
   .item.tweet .tw a:hover{text-decoration-color:var(--muted)}
 
@@ -316,8 +339,8 @@
   </div>
 
   <div class="deck" style="grid-template-columns:1fr">
-    <section class="panel" data-panel="x">
-      <div class="panel-h"><span class="accent" style="background:#E9E4D8"></span><h2>Voces en X — analistas de China tech</h2><span class="count" id="c-x"></span><span class="tog">▾</span></div>
+    <section class="panel xpanel" data-panel="x">
+      <div class="panel-h"><span class="xmark">𝕏</span><h2>Voces en X — analistas de China tech</h2><span class="count" id="c-x"></span><span class="tog">▾</span></div>
       <div class="panel-b cols" id="b-x"><div class="loading">Buscando instancia disponible</div></div>
     </section>
   </div>
@@ -409,6 +432,24 @@ const FEEDS = [
   {name:'Project Syndicate',url:'https://www.project-syndicate.org/rss',                  region:'global', panel:'reportes', w:3},
   {name:'Noahpinion',       url:'https://www.noahpinion.blog/feed',                       region:'global', panel:'reportes', w:3},
   {name:'Our World in Data',url:'https://ourworldindata.org/atom.xml',                    region:'global', panel:'reportes', w:3},
+  {name:'SCSP',             url:'https://scsp222.substack.com/feed',                      region:'us', panel:'reportes', w:3},
+  {name:'CSET Georgetown',  url:'https://cset.georgetown.edu/feed/',                      region:'us', panel:'reportes', w:3},
+  {name:'ASPI Strategist',  url:'https://www.aspistrategist.org.au/feed/',                region:'global', panel:'reportes', w:2.5},
+  {name:'Rhodium Group',    url:'https://rhg.com/feed/',                                  region:'china', panel:'reportes', w:3},
+  {name:'Import AI',        url:'https://importai.substack.com/feed',                     region:'us', panel:'reportes', w:3},
+  {name:'Asianometry',      url:'https://www.asianometry.com/feed',                       region:'china', panel:'china', w:3},
+  {name:'Institute for Progress', url:'https://ifp.org/feed/',                            region:'us', panel:'reportes', w:3},
+  {name:'Foreign Affairs',  url:'https://www.foreignaffairs.com/rss.xml',                 region:'global', panel:'reportes', w:3},
+  {name:'McKinsey Insights',url:'https://www.mckinsey.com/insights/rss',                  region:'global', panel:'reportes', w:3},
+  {name:'Foreign Policy',   url:'https://foreignpolicy.com/feed/',                        region:'global', panel:'reportes', w:2.5},
+  {name:'CSIS',             url:'https://www.csis.org/rss.xml',                           region:'us', panel:'reportes', w:3},
+  {name:'WSJ Technology',   url:'https://feeds.a.dj.com/rss/RSSWSJD.xml',                 region:'us', panel:'us', w:2},
+  {name:'Big Think',        url:'https://bigthink.com/feed/',                             region:'global', panel:'ciencia', w:2},
+  {name:'Global Times',     url:'https://www.globaltimes.cn/rss/outbrain.xml',            region:'china', panel:'china', w:1},
+  {name:'The Economist · China', url:'https://www.economist.com/china/rss.xml',           region:'china', panel:'china', w:2.5},
+  {name:'The Economist · Sci&Tech', url:'https://www.economist.com/science-and-technology/rss.xml', region:'global', panel:'ciencia', w:2.5},
+  {name:'CFR',              url:'https://www.cfr.org/rss.xml',                            region:'us', panel:'reportes', w:3},
+  {name:'Semafor',          url:'https://www.semafor.com/rss.xml',                        region:'global', panel:'us', w:2},
 ];
 
 /* =========================================================
@@ -429,6 +470,33 @@ const XACCOUNTS = [
   {name:'Rui Ma',           handle:'ruima'},
   {name:'Paul L',           handle:'paull626'},
   {name:'Shenzhen Pages',   handle:'shenzhenpages'},
+  {name:'Niko McCarty',     handle:'nikomccarty'},
+  {name:'China Science',    handle:'chinascience'},
+  {name:'Milk Road AI',     handle:'milkroadai'},
+  {name:'Fengming',         handle:'fengminglupe'},
+  {name:'CyberRobo',        handle:'cyberrobooo'},
+  {name:'Arnaud Bertrand',  handle:'RnaudBertrand'},
+  {name:'vraserX',          handle:'vraserX'},
+  {name:'People\u2019s Daily', handle:'PDChina'},
+  {name:'Dominic',          handle:'dominctsz'},
+  {name:'NIK',              handle:'ns123abc'},
+  {name:'China Focus',      handle:'china_focus'},
+  {name:'Shangguan Jiewen', handle:'shangguanjiewen'},
+  {name:'China Policy',     handle:'policycn'},
+  {name:'Nuclear BP',       handle:'nuclear_BP'},
+  {name:'TP Huang',         handle:'tphuang'},
+  {name:'New Industrials',  handle:'newindustrials'},
+  {name:'Ben Bajarin',      handle:'BenBajarin'},
+  {name:'IRENA',            handle:'IRENA'},
+  {name:'First Adopter',    handle:'firstadopter'},
+  {name:'Rihard Jarc',      handle:'RihardJarc'},
+  {name:'Jacob Helberg',    handle:'jacobhelberg'},
+  {name:'commiepommie',     handle:'commiepommie'},
+  {name:'Cyrus Janssen',    handle:'thecyrusjanssen'},
+  {name:'XH Lee',           handle:'XH_lee23'},
+  {name:'Semafor',          handle:'semafor'},
+  {name:'The Humanoid Hub', handle:'thehumanoidhub'},
+  {name:'ShanghaiEye',      handle:'shanghaieye'},
 ];
 
 /* Instancias Nitter/forks con RSS público (van en cascada) */
@@ -553,6 +621,11 @@ function classifyTopic(t){
   if(TOPICS.ciencia.test(t)) return 'ciencia';
   return 'general';
 }
+function classifyTopics(t){
+  const out = [];
+  for(const k of ['chips','ia','robots','energia','bio','espacio','infra','ciencia']) if(TOPICS[k].test(t)) out.push(k);
+  return out.length ? out : ['general'];
+}
 function classifyRegion(t, def){
   if(REGION_KW.china.test(t)) return 'china';
   if(REGION_KW.eu.test(t))    return 'eu';
@@ -575,7 +648,7 @@ const TOPIC_LABEL = {chips:'Chips',ia:'IA',robots:'Robótica',energia:'Energía'
 
 /* ---------- fetch + parse ---------- */
 async function fetchFeed(feed){
-  const key = 'frontera:' + feed.url;
+  const key = 'tfm2:' + feed.url;
   try{
     const cached = JSON.parse(localStorage.getItem(key) || 'null');
     if(cached && Date.now() - cached.t < CACHE_TTL){ return cached.items; }
@@ -610,12 +683,14 @@ async function fetchFeed(feed){
 
   const out = items.map(i => {
     const blob = i.title + ' ' + i.desc;
+    const topics = classifyTopics(blob);
     return {
       ...i,
       source: feed.name,
       panel: feed.panel,
       region: classifyRegion(blob, feed.region),
-      topic: classifyTopic(blob),
+      topic: topics[0],
+      topics,
       score: depthScore(i.title, i.desc, feed.w),
     };
   });
@@ -625,8 +700,9 @@ async function fetchFeed(feed){
 
 /* ---------- X vía Nitter (RSS) ---------- */
 const XFAILED = [];
+const NSTATS = {};   // salud por instancia: si falla mucho sin ningún éxito, se omite en esta sesión
 async function fetchX(acc){
-  const key = 'frontera:x:' + acc.handle;
+  const key = 'tfm2:x:' + acc.handle;
   try{
     const cached = JSON.parse(localStorage.getItem(key) || 'null');
     if(cached && Date.now() - cached.t < CACHE_TTL){ return cached.items; }
@@ -635,15 +711,18 @@ async function fetchX(acc){
   let xml = null;
   outer:
   for(const inst of NITTERS){
+    const st = NSTATS[inst] = NSTATS[inst] || {ok:0, fail:0};
+    if(st.fail >= 6 && st.ok === 0) continue;   // instancia muerta esta sesión
     const feedUrl = inst + '/' + acc.handle + '/rss';
-    for(const proxy of proxyOrder(hashStr(feedUrl)).slice(0,3)){
+    for(const proxy of proxyOrder(hashStr(feedUrl)).slice(0,2)){
       try{
         const r = await fetch(proxy(feedUrl), {signal: AbortSignal.timeout(12000)});
         if(!r.ok) continue;
         const text = unwrap(await r.text());
-        if(text && text.includes('<rss')){ xml = text; break outer; }
+        if(text && text.includes('<rss')){ xml = text; st.ok++; break outer; }
       }catch(e){}
     }
+    st.fail++;
   }
   if(!xml){ XFAILED.push(acc); throw new Error('sin instancia'); }
 
@@ -660,16 +739,20 @@ async function fetchX(acc){
     return {title, link, date};
   }).filter(i => i.title && i.link && !isNaN(i.date));
 
-  const out = items.map(i => ({
-    ...i,
-    desc: '',
-    source: acc.name + ' · @' + acc.handle,
-    panel: 'x',
-    region: classifyRegion(i.title, 'china'),
-    topic: classifyTopic(i.title),
-    score: 0,
-    isTweet: true,
-  }));
+  const out = items.map(i => {
+    const topics = classifyTopics(i.title);
+    return {
+      ...i,
+      desc: '',
+      source: acc.name + ' · @' + acc.handle,
+      panel: 'x',
+      region: classifyRegion(i.title, 'china'),
+      topic: topics[0],
+      topics,
+      score: 0,
+      isTweet: true,
+    };
+  });
   try{ localStorage.setItem(key, JSON.stringify({t: Date.now(), items: out})); }catch(e){}
   return out;
 }
@@ -698,8 +781,8 @@ async function loadAll(force){
   $('#refresh').disabled = true;
   try{
     if(force){
-      FEEDS.forEach(f => localStorage.removeItem('frontera:'+f.url));
-      XACCOUNTS.forEach(a => localStorage.removeItem('frontera:x:'+a.handle));
+      FEEDS.forEach(f => localStorage.removeItem('tfm2:'+f.url));
+      XACCOUNTS.forEach(a => localStorage.removeItem('tfm2:x:'+a.handle));
     }
     ITEMS = []; feedsOK = 0; feedsFail = 0; XFAILED.length = 0;
     setStatus('Conectando', '');
@@ -721,6 +804,7 @@ async function loadAll(force){
   } finally {
     LOADING = false;
     $('#refresh').disabled = false;
+    checkGaps();
   }
 }
 
@@ -754,7 +838,7 @@ function itemHTML(it, big){
 }
 
 function visible(it){
-  if(topicFilter !== 'all' && it.topic !== topicFilter) return false;
+  if(topicFilter !== 'all' && !(it.topics || [it.topic]).includes(topicFilter)) return false;
   if(depthOnly && !it.isTweet && it.score < 4) return false;   // el filtro "a fondo" no aplica a X
   if(entityFilter && !it.title.toLowerCase().includes(entityFilter.toLowerCase())) return false;
   const age = (Date.now()-it.date)/(86400000);
@@ -764,6 +848,52 @@ function visible(it){
 
 /* rank híbrido: prioriza profundidad, penaliza antigüedad */
 const rank = it => it.score*2 - ((Date.now()-it.date)/86400000)*0.8;
+
+/* =========================================================
+   RELLENO AUTOMÁTICO — si un panel regional queda vacío con
+   los filtros activos, se consulta Google News RSS con una
+   búsqueda dirigida (región + tema) y se inyectan resultados.
+   ========================================================= */
+const GAP_REGION_Q = {china:'China', us:'United States', eu:'Europe'};
+const GAP_TOPIC_Q = {
+  all:'technology innovation', general:'technology innovation',
+  chips:'semiconductors chips', ia:'artificial intelligence',
+  robots:'robotics robots', energia:'energy power',
+  bio:'biotech medicine', espacio:'space rockets satellites',
+  infra:'infrastructure manufacturing', ciencia:'science research',
+};
+const gapTried = new Set();
+let lastCounts = {};
+
+async function gapFill(regionPanel, topic){
+  const q = entityFilter
+    ? entityFilter + ' ' + GAP_REGION_Q[regionPanel]
+    : GAP_REGION_Q[regionPanel] + ' ' + (GAP_TOPIC_Q[topic] || GAP_TOPIC_Q.all);
+  const key = regionPanel + ':' + topic + ':' + (entityFilter||'');
+  if(gapTried.has(key)) return;
+  gapTried.add(key);
+  const url = 'https://news.google.com/rss/search?q=' + encodeURIComponent(q + ' when:7d') + '&hl=en-US&gl=US&ceid=US:en';
+  try{
+    const items = await fetchFeed({name:'Google News', url, region:regionPanel, panel:regionPanel, w:1});
+    items.forEach(i => {
+      // GN trae "Titular - Medio": separar el medio
+      const m = i.title.match(/^(.*)\s-\s([^\-]{2,40})$/);
+      if(m){ i.title = m[1].trim(); i.source = m[2].trim(); }
+      i.desc = '';
+      i.region = regionPanel;
+      if(topic !== 'all') i.topics = Array.from(new Set([...(i.topics||[]), topic]));
+    });
+    ITEMS.push(...items);
+    renderAll();
+  }catch(e){ /* sin relleno disponible */ }
+}
+
+function checkGaps(){
+  if(LOADING || ITEMS.length < 10 || depthOnly) return;   // no rellenar a medias ni en modo "a fondo"
+  for(const p of ['china','us','eu']){
+    if(!lastCounts[p]) gapFill(p, topicFilter);
+  }
+}
 
 function renderPanel(panelId, items){
   const el = $('#b-'+panelId);
@@ -799,12 +929,17 @@ function renderAll(){
   const heroLinks = new Set(hero.map(h=>h.link));
   const rest = dedup.filter(i => !heroLinks.has(i.link));
 
-  // Paneles por región: incluye items de fuentes globales reclasificados por keywords
-  renderPanel('china',    rest.filter(i => i.panel==='china' || (i.panel!=='ciencia' && i.panel!=='reportes' && i.region==='china')).slice(0,40));
-  renderPanel('us',       rest.filter(i => i.panel==='us'    || (i.panel!=='ciencia' && i.panel!=='reportes' && i.region==='us' && i.panel!=='china')).slice(0,40));
-  renderPanel('eu',       rest.filter(i => i.panel==='eu'    || (i.panel!=='ciencia' && i.panel!=='reportes' && i.region==='eu' && i.panel!=='china' && i.panel!=='us')).slice(0,40));
+  // Buckets por país: cada artículo cae donde su CONTENIDO apunta
+  // (robots en China → China, aunque lo publique Nature o Wired)
+  const aChina = rest.filter(i => i.region==='china').slice(0,40);
+  const aUS    = rest.filter(i => i.region==='us').slice(0,40);
+  const aEU    = rest.filter(i => i.region==='eu').slice(0,40);
+  renderPanel('china', aChina);
+  renderPanel('us', aUS);
+  renderPanel('eu', aEU);
   renderPanel('ciencia',  rest.filter(i => i.panel==='ciencia').slice(0,40));
   renderPanel('reportes', rest.filter(i => i.panel==='reportes' || i.score>=5).slice(0,40));
+  lastCounts = {china:aChina.length, us:aUS.length, eu:aEU.length};
 
   // Panel X
   renderX(tweets.slice(0,60));
@@ -818,15 +953,23 @@ function renderX(tweets){
   const el = $('#b-x'); const c = $('#c-x');
   let html = '';
   if(tweets.length){
-    html = tweets.map(t => `<article class="item tweet r-${t.region}">
+    html = tweets.map(t => {
+      const parts = t.source.split(' · ');
+      const name = parts[0] || t.source;
+      const handle = parts[1] || '';
+      const initials = name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      const hue = hashStr(handle || name) % 360;
+      return `<article class="item tweet r-${t.region}">
       <div class="meta">
-        <span class="src">${esc(t.source)}</span>
+        <span class="av" style="background:hsl(${hue},45%,68%)">${esc(initials)}</span>
+        <span class="src">${esc(name)}</span>
+        <span class="handle">${esc(handle)}</span>
         <span>${timeAgo(t.date)}</span>
         ${(Date.now()-t.date) < 6*3600*1000 ? '<span class="newdot">NUEVO</span>' : ''}
-        <span class="tag">${TOPIC_LABEL[t.topic]||t.topic}</span>
       </div>
       <p class="tw"><a href="${esc(t.link)}" target="_blank" rel="noopener">${esc(t.title.slice(0,360))}</a></p>
-    </article>`).join('');
+    </article>`;
+    }).join('');
   }
   if(XFAILED.length){
     const links = XFAILED.map(a => `<a href="https://x.com/${esc(a.handle)}" target="_blank" rel="noopener">@${esc(a.handle)}</a>`).join(' · ');
@@ -843,7 +986,7 @@ function renderTopicCounts(){
   for(const it of ITEMS){
     const saved = topicFilter; topicFilter = 'all';
     const ok = visible(it); topicFilter = saved;
-    if(ok) counts[it.topic] = (counts[it.topic]||0) + 1;
+    if(ok) for(const t of (it.topics || [it.topic])) counts[t] = (counts[t]||0) + 1;
   }
   document.querySelectorAll('.chip.topic').forEach(ch => {
     const t = ch.dataset.topic;
@@ -872,6 +1015,7 @@ $('#filters').addEventListener('click', e => {
     topicFilter = chip.dataset.topic;
   }
   renderAll();
+  checkGaps();
 });
 
 $('#topics').addEventListener('click', e => {
