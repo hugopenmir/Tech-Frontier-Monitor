@@ -845,6 +845,20 @@ async function fetchYT(ch){
     if(cached && Date.now() - cached.t < CACHE_TTL_X){ return cached.items; }
   }catch(e){}
 
+  // 0) intento barato: canales antiguos responden al feed por nombre de usuario
+  let cheap = null;
+  if(!localStorage.getItem('tfm3:ytid:' + ch.handle)){
+    const uUrl = 'https://www.youtube.com/feeds/videos.xml?user=' + ch.handle;
+    for(const proxy of proxyOrder(hashStr(uUrl)).slice(0,2)){
+      try{
+        const r = await fetch(proxy(uUrl), {signal: AbortSignal.timeout(8000)});
+        if(!r.ok) continue;
+        const t = unwrap(await r.text());
+        if(t && t.includes('<feed')){ cheap = t; break; }
+      }catch(e){}
+    }
+  }
+
   // 1) resolver channel_id (una sola vez, queda guardado)
   let id = localStorage.getItem('tfm3:ytid:' + ch.handle);
   if(!id){
@@ -858,12 +872,12 @@ async function fetchYT(ch){
       }catch(e){}
     }
   }
-  if(!id){ YTFAILED.push(ch); throw new Error('canal no resuelto'); }
+  if(!id && !cheap){ YTFAILED.push(ch); throw new Error('canal no resuelto'); }
 
   // 2) feed RSS oficial del canal
-  let xml = null;
+  let xml = cheap;
   const feedUrl = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + id;
-  for(const proxy of proxyOrder(hashStr(feedUrl))){
+  for(const proxy of (xml ? [] : proxyOrder(hashStr(feedUrl)))){
     try{
       const r = await fetch(proxy(feedUrl), {signal: AbortSignal.timeout(9000)});
       if(!r.ok) continue;
@@ -946,8 +960,8 @@ async function loadAll(force){
     setStatus('Actualizando', '');
     const jobs = [
       ...FEEDS.map(f => ({type:'rss', f})),
-      ...XACCOUNTS.map(a => ({type:'x', a})),
       ...YTCHANNELS.map(ch => ({type:'yt', ch})),
+      ...XACCOUNTS.map(a => ({type:'x', a})),
     ];
     const failed = [];
     await runQueue(jobs, failed);
