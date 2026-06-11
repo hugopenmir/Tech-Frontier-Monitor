@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Frontier Monitor — China · US · Europa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0D1219;
+    --panel:#131B26;
+    --panel2:#0F1620;
+    --line:#243140;
+    --text:#E9E4D8;
+    --muted:#8A94A3;
+    --china:#E5484D;
+    --us:#45B8E8;
+    --eu:#E2B93B;
+    --depth:#7BC47F;
+    --serif:'Source Serif 4',Georgia,serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scrollbar-color:#2C3A4C var(--bg)}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--serif);
+    font-size:15px;
+    line-height:1.45;
+    padding:0 0 60px;
+  }
+  a{color:inherit;text-decoration:none}
+  a:hover{text-decoration:underline;text-decoration-color:var(--muted)}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--us);outline-offset:2px;border-radius:2px}
+
+  /* ---------- header ---------- */
+  header{
+    border-bottom:1px solid var(--line);
+    padding:22px 24px 16px;
+    background:linear-gradient(180deg,#101824 0%,var(--bg) 100%);
+  }
+  .masthead{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .masthead h1{
+    font-family:var(--mono);
+    font-size:22px;
+    font-weight:600;
+    letter-spacing:.14em;
+  }
+  .masthead h1 .tri{display:inline-flex;gap:4px;margin-right:10px;vertical-align:middle}
+  .masthead h1 .tri i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .masthead .sub{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .statusbar{
+    margin-top:10px;
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    align-items:center;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+  }
+  .statusbar .dot{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block;margin-right:6px;vertical-align:1px}
+  .statusbar .dot.ok{background:var(--depth);box-shadow:0 0 6px var(--depth)}
+  .statusbar .dot.err{background:var(--china)}
+  .statusbar button{
+    font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+    background:none;border:1px solid var(--line);color:var(--text);
+    padding:4px 12px;border-radius:3px;cursor:pointer;
+  }
+  .statusbar button:hover{border-color:var(--muted)}
+
+  /* ---------- filters ---------- */
+  .filters{
+    position:sticky;top:0;z-index:20;
+    background:rgba(13,18,25,.94);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+    padding:10px 24px;
+    display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+  }
+  .chip{
+    font-family:var(--mono);font-size:11px;letter-spacing:.04em;
+    border:1px solid var(--line);color:var(--muted);
+    background:var(--panel2);
+    padding:4px 11px;border-radius:999px;cursor:pointer;
+    transition:color .15s,border-color .15s;
+  }
+  .chip:hover{color:var(--text)}
+  .chip.on{color:var(--bg);background:var(--text);border-color:var(--text);font-weight:600}
+  .chip.depth-toggle.on{background:var(--depth);border-color:var(--depth)}
+  .filters .sep{width:1px;height:18px;background:var(--line);margin:0 4px}
+
+  /* ---------- layout ---------- */
+  main{max-width:1480px;margin:0 auto;padding:20px 24px 0}
+  .deck{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+  .deck.two{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:1100px){.deck,.deck.two{grid-template-columns:1fr}}
+
+  /* ---------- panels ---------- */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .panel-h{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    background:var(--panel2);
+    cursor:pointer;user-select:none;
+  }
+  .panel-h h2{
+    font-family:var(--mono);font-size:12px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;flex:1;
+  }
+  .panel-h .accent{width:10px;height:10px;border-radius:2px;flex:none}
+  .panel-h .count{font-family:var(--mono);font-size:10px;color:var(--muted)}
+  .panel-h .tog{font-family:var(--mono);font-size:10px;color:var(--muted)}
+  .panel-b{max-height:560px;overflow-y:auto}
+  .panel.collapsed .panel-b{display:none}
+  .panel-b::-webkit-scrollbar{width:8px}
+  .panel-b::-webkit-scrollbar-thumb{background:#2C3A4C;border-radius:4px}
+  .panel .loading,.panel .empty{
+    font-family:var(--mono);font-size:11px;color:var(--muted);
+    padding:18px 14px;
+  }
+  .loading::after{content:'▋';animation:blink 1s steps(1) infinite;margin-left:4px}
+  @keyframes blink{50%{opacity:0}}
+  @media(prefers-reduced-motion:reduce){.loading::after{animation:none}}
+
+  /* ---------- items ---------- */
+  .item{
+    padding:12px 14px;
+    border-bottom:1px solid var(--line);
+    border-left:3px solid transparent;
+  }
+  .item:last-child{border-bottom:none}
+  .item.r-china{border-left-color:var(--china)}
+  .item.r-us{border-left-color:var(--us)}
+  .item.r-eu{border-left-color:var(--eu)}
+  .item.r-global{border-left-color:#3A4A5C}
+  .item .meta{
+    display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+    font-family:var(--mono);font-size:10px;color:var(--muted);
+    margin-bottom:5px;letter-spacing:.03em;
+  }
+  .item .src{color:var(--text);font-weight:500}
+  .item .tag{
+    border:1px solid var(--line);border-radius:3px;
+    padding:1px 6px;font-size:9px;text-transform:uppercase;letter-spacing:.06em;
+  }
+  .badge{
+    background:var(--depth);color:#0D1219;font-weight:600;
+    border-radius:3px;padding:1px 7px;font-size:9px;
+    letter-spacing:.08em;font-family:var(--mono);
+  }
+  .item h3{
+    font-size:15.5px;font-weight:600;line-height:1.32;
+  }
+  .item h3 a:hover{text-decoration-color:var(--text)}
+  .item p{
+    margin-top:5px;font-size:13px;color:var(--muted);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .depthbar{display:inline-flex;gap:2px;align-items:center}
+  .depthbar i{width:4px;height:9px;background:var(--line);border-radius:1px}
+  .depthbar i.f{background:var(--depth)}
+
+  /* ---------- X panel ---------- */
+  .panel-b.cols{
+    column-count:3;column-gap:0;max-height:520px;
+  }
+  @media(max-width:1100px){.panel-b.cols{column-count:1}}
+  .panel-b.cols .item{break-inside:avoid}
+  .item.tweet .tw{
+    -webkit-line-clamp:6;
+    color:var(--text);font-size:13.5px;line-height:1.5;
+  }
+  .item.tweet .tw a:hover{text-decoration-color:var(--muted)}
+
+  /* ---------- A FONDO hero strip ---------- */
+  .hero{
+    margin-top:18px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:linear-gradient(135deg,#15202E 0%,var(--panel) 70%);
+    overflow:hidden;
+  }
+  .hero .panel-h{background:transparent;cursor:default}
+  .hero .panel-h h2{color:var(--depth)}
+  .hero-b{display:grid;grid-template-columns:repeat(3,1fr)}
+  @media(max-width:1100px){.hero-b{grid-template-columns:1fr}}
+  .hero-b .item{border-bottom:1px solid var(--line)}
+  .hero-b .item h3{font-size:17px}
+  @media(min-width:1101px){
+    .hero-b .item{border-bottom:none;border-right:1px solid var(--line)}
+    .hero-b .item:nth-child(3n){border-right:none}
+    .hero-b .item:nth-child(n+4){border-top:1px solid var(--line)}
+  }
+
+  footer{
+    max-width:1480px;margin:28px auto 0;padding:14px 24px;
+    font-family:var(--mono);font-size:10px;color:var(--muted);
+    border-top:1px solid var(--line);line-height:1.8;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="masthead">
+    <h1><span class="tri"><i style="background:var(--china)"></i><i style="background:var(--us)"></i><i style="background:var(--eu)"></i></span>TECH FRONTIER MONITOR</h1>
+    <span class="sub">Monitor global · tecnología / innovación / infraestructura / energía / ciencia · China — US — Europa</span>
+  </div>
+  <div class="statusbar">
+    <span id="status"><span class="dot"></span>Conectando</span>
+    <span id="lastupdate">Última actualización: —</span>
+    <span id="feedcount"></span>
+    <button id="refresh">↻ Actualizar</button>
+  </div>
+</header>
+
+<div class="filters" id="filters">
+  <button class="chip depth-toggle" data-depth="1">◆ Solo a fondo</button>
+  <span class="sep"></span>
+  <button class="chip topic on" data-topic="all">Todos</button>
+  <button class="chip topic" data-topic="chips">Chips</button>
+  <button class="chip topic" data-topic="ia">IA</button>
+  <button class="chip topic" data-topic="robots">Robótica</button>
+  <button class="chip topic" data-topic="energia">Energía</button>
+  <button class="chip topic" data-topic="bio">Bio / Medicina</button>
+  <button class="chip topic" data-topic="espacio">Espacio</button>
+  <button class="chip topic" data-topic="infra">Infraestructura</button>
+  <button class="chip topic" data-topic="ciencia">Ciencia</button>
+</div>
+
+<main>
+  <!-- Signature: deep-read radar -->
+  <section class="hero panel" id="hero">
+    <div class="panel-h"><span class="accent" style="background:var(--depth)"></span><h2>A fondo hoy — radar de lecturas profundas</h2><span class="count" id="c-hero"></span></div>
+    <div class="hero-b" id="b-hero"><div class="loading">Calibrando radar</div></div>
+  </section>
+
+  <div class="deck">
+    <section class="panel" data-panel="china">
+      <div class="panel-h"><span class="accent" style="background:var(--china)"></span><h2>China</h2><span class="count" id="c-china"></span><span class="tog">▾</span></div>
+      <div class="panel-b" id="b-china"><div class="loading">Cargando feeds</div></div>
+    </section>
+    <section class="panel" data-panel="us">
+      <div class="panel-h"><span class="accent" style="background:var(--us)"></span><h2>Estados Unidos</h2><span class="count" id="c-us"></span><span class="tog">▾</span></div>
+      <div class="panel-b" id="b-us"><div class="loading">Cargando feeds</div></div>
+    </section>
+    <section class="panel" data-panel="eu">
+      <div class="panel-h"><span class="accent" style="background:var(--eu)"></span><h2>Europa</h2><span class="count" id="c-eu"></span><span class="tog">▾</span></div>
+      <div class="panel-b" id="b-eu"><div class="loading">Cargando feeds</div></div>
+    </section>
+  </div>
+
+  <div class="deck two">
+    <section class="panel" data-panel="ciencia">
+      <div class="panel-h"><span class="accent" style="background:#7E8FA6"></span><h2>Ciencia y descubrimientos</h2><span class="count" id="c-ciencia"></span><span class="tog">▾</span></div>
+      <div class="panel-b" id="b-ciencia"><div class="loading">Cargando feeds</div></div>
+    </section>
+    <section class="panel" data-panel="reportes">
+      <div class="panel-h"><span class="accent" style="background:#B08BD9"></span><h2>Análisis y reportes</h2><span class="count" id="c-reportes"></span><span class="tog">▾</span></div>
+      <div class="panel-b" id="b-reportes"><div class="loading">Cargando feeds</div></div>
+    </section>
+  </div>
+
+  <div class="deck" style="grid-template-columns:1fr">
+    <section class="panel" data-panel="x">
+      <div class="panel-h"><span class="accent" style="background:#E9E4D8"></span><h2>Voces en X — analistas de China tech</h2><span class="count" id="c-x"></span><span class="tog">▾</span></div>
+      <div class="panel-b cols" id="b-x"><div class="loading">Buscando instancia disponible</div></div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  Fuentes vía RSS público: Bloomberg, FT, The Atlantic, The Wire China, Caixin Global, Xinhua, Wired, TIME, Forbes, Popular Mechanics, Project Syndicate, MIT Technology Review, IEEE Spectrum, SemiAnalysis, High Capacity, The Next Platform, Construction Physics, Ars Technica, STAT, Quanta, Nature, Science, Phys.org, ScienceDaily, SCMP, ChinaTalk, MERICS, Sixth Tone, Sifted, Euractiv, The Register, Physics World, CERN, Brookings, Works in Progress.<br>
+  ◆ "A FONDO" = scoring automático por fuente, señales de análisis en el titular y extensión del texto. Cache local de 20 min.<br>
+  𝕏 El panel de voces se lee vía instancias públicas tipo Nitter (xcancel / nitter.net), que pueden caer por temporadas; cuando no hay señal, el panel muestra enlaces directos a cada perfil. Para agregar fuentes o cuentas, edita los arreglos <b>FEEDS</b> y <b>XACCOUNTS</b> al inicio del script.
+</footer>
+
+<script>
+/* =========================================================
+   CONFIGURACIÓN DE FUENTES
+   region: china | us | eu | global
+   panel : china | us | eu | ciencia | reportes  (panel por defecto)
+   w     : peso de profundidad de la fuente (1 = wire, 3 = ensayo/análisis)
+   ========================================================= */
+const FEEDS = [
+  // ---- CHINA ----
+  {name:'SCMP Tech',        url:'https://www.scmp.com/rss/36/feed',                       region:'china', panel:'china', w:1.5},
+  {name:'SCMP China',       url:'https://www.scmp.com/rss/4/feed',                        region:'china', panel:'china', w:1},
+  {name:'ChinaTalk',        url:'https://www.chinatalk.media/feed',                       region:'china', panel:'china', w:3},
+  {name:'MERICS',           url:'https://merics.org/en/rss',                              region:'china', panel:'china', w:3},
+  {name:'Sixth Tone',       url:'https://www.sixthtone.com/rss',                          region:'china', panel:'china', w:2},
+  {name:'The Wire China',   url:'https://www.thewirechina.com/feed/',                     region:'china', panel:'china', w:3},
+  {name:'High Capacity',    url:'https://www.highcapacity.org/feed',                      region:'china', panel:'china', w:3},
+  {name:'Caixin Global',    url:'https://www.caixinglobal.com/rss/all.xml',               region:'china', panel:'china', w:2.5},
+  {name:'Xinhua Sci-Tech',  url:'http://www.xinhuanet.com/english/rss/scitechrss.xml',    region:'china', panel:'china', w:1},
+
+  // ---- US ----
+  {name:'MIT Tech Review',  url:'https://www.technologyreview.com/feed/',                 region:'us', panel:'us', w:3},
+  {name:'IEEE Spectrum',    url:'https://spectrum.ieee.org/feeds/feed.rss',               region:'us', panel:'us', w:2.5},
+  {name:'Ars Technica',     url:'https://feeds.arstechnica.com/arstechnica/index',        region:'us', panel:'us', w:1.5},
+  {name:'SemiAnalysis',     url:'https://semianalysis.com/feed/',                         region:'us', panel:'us', w:3},
+  {name:'The Next Platform',url:'https://www.nextplatform.com/feed/',                     region:'us', panel:'us', w:2.5},
+  {name:'Construction Physics', url:'https://www.construction-physics.com/feed',          region:'us', panel:'us', w:3},
+  {name:'STAT News',        url:'https://www.statnews.com/feed/',                         region:'us', panel:'us', w:2},
+  {name:'Bloomberg Tech',   url:'https://feeds.bloomberg.com/technology/news.rss',        region:'us', panel:'us', w:2},
+  {name:'Bloomberg Green',  url:'https://feeds.bloomberg.com/green/news.rss',             region:'global', panel:'us', w:2},
+  {name:'Wired',            url:'https://www.wired.com/feed/rss',                         region:'us', panel:'us', w:2},
+  {name:'The Atlantic · Tech', url:'https://www.theatlantic.com/feed/channel/technology/',region:'us', panel:'us', w:2.5},
+  {name:'The Atlantic · Science', url:'https://www.theatlantic.com/feed/channel/science/',region:'global', panel:'ciencia', w:2.5},
+  {name:'TIME',             url:'https://time.com/feed/',                                 region:'us', panel:'us', w:1.5},
+  {name:'Forbes Innovation',url:'https://www.forbes.com/innovation/feed2/',               region:'us', panel:'us', w:1.5},
+  {name:'Popular Mechanics',url:'https://www.popularmechanics.com/rss/all.xml',           region:'us', panel:'ciencia', w:1.5},
+
+  // ---- EUROPA ----
+  {name:'FT Technology',    url:'https://www.ft.com/technology?format=rss',               region:'eu', panel:'eu', w:2.5},
+  {name:'Sifted',           url:'https://sifted.eu/feed',                                 region:'eu', panel:'eu', w:2},
+  {name:'Euractiv Digital', url:'https://www.euractiv.com/sections/digital/feed/',        region:'eu', panel:'eu', w:2},
+  {name:'The Register',     url:'https://www.theregister.com/headlines.atom',             region:'eu', panel:'eu', w:1},
+  {name:'Physics World',    url:'https://physicsworld.com/feed/',                         region:'eu', panel:'eu', w:2},
+  {name:'CERN',             url:'https://home.cern/api/news/news/feed.rss',               region:'eu', panel:'eu', w:2},
+
+  // ---- CIENCIA GLOBAL ----
+  {name:'Nature',           url:'https://www.nature.com/nature.rss',                      region:'global', panel:'ciencia', w:3},
+  {name:'Science',          url:'https://www.science.org/rss/news_current.xml',           region:'global', panel:'ciencia', w:3},
+  {name:'Quanta Magazine',  url:'https://www.quantamagazine.org/feed/',                   region:'global', panel:'ciencia', w:3},
+  {name:'Phys.org',         url:'https://phys.org/rss-feed/',                             region:'global', panel:'ciencia', w:1},
+  {name:'ScienceDaily',     url:'https://www.sciencedaily.com/rss/top/science.xml',       region:'global', panel:'ciencia', w:1},
+
+  // ---- ANÁLISIS / THINK TANKS ----
+  {name:'Brookings',        url:'https://www.brookings.edu/feed/',                        region:'global', panel:'reportes', w:3},
+  {name:'Works in Progress',url:'https://worksinprogress.co/feed/',                       region:'global', panel:'reportes', w:3},
+  {name:'Project Syndicate',url:'https://www.project-syndicate.org/rss',                  region:'global', panel:'reportes', w:3},
+];
+
+/* =========================================================
+   CUENTAS DE X — se leen vía instancias tipo Nitter (RSS).
+   Para agregar una cuenta solo necesitas su handle exacto.
+   ========================================================= */
+const XACCOUNTS = [
+  {name:'Kyle Chan',        handle:'kyleichan'},
+  {name:'Paul Triolo',      handle:'pstAsiatech'},
+  {name:'Carl Zha',         handle:'CarlZha'},
+  {name:'Poe Zhao',         handle:'poezhao0605'},
+  {name:'Shenzhen Channel', handle:'sz_mediagroup'},
+  {name:'Tech Buzz China',  handle:'techbuzzchina'},
+  {name:'Jostein Hauge',    handle:'haugejostein'},
+  {name:'Corrine',          handle:'OopsGuess'},
+  {name:'Xu Zhenqing',      handle:'Xuejia24682'},
+  {name:'Zephyr',           handle:'zephyr_Z9'},
+  {name:'Rui Ma',           handle:'ruima'},
+  {name:'Paul L',           handle:'paull626'},
+  {name:'Shenzhen Pages',   handle:'shenzhenpages'},
+];
+
+/* Instancias Nitter/forks con RSS público (van en cascada) */
+const NITTERS = [
+  'https://xcancel.com',
+  'https://nitter.net',
+  'https://nitter.poast.org',
+];
+
+/* Proxies CORS con fallback en cadena */
+const PROXIES = [
+  u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+  u => 'https://corsproxy.io/?url=' + encodeURIComponent(u),
+  u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u),
+  u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u),
+];
+/* rotación: cada feed empieza por un proxy distinto para repartir la carga */
+function hashStr(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return Math.abs(h); }
+function proxyOrder(seed){
+  const off = seed % PROXIES.length;
+  return PROXIES.map((_,i)=>PROXIES[(i+off)%PROXIES.length]);
+}
+/* allorigins /get devuelve JSON {contents: "..."} — desempaquetar si aplica */
+function unwrap(text){
+  if(text && text[0]==='{' && text.includes('"contents"')){
+    try{ return JSON.parse(text).contents || ''; }catch(e){ return ''; }
+  }
+  return text;
+}
+
+const CACHE_TTL = 20 * 60 * 1000;   // 20 min
+const MAX_ITEMS_PER_FEED = 15;
+const MAX_AGE_DAYS = 10;
+
+/* ---------- clasificadores ---------- */
+const TOPICS = {
+  chips:   /\b(chip|chips|semiconductor|tsmc|asml|smic|foundr|lithograph|euv|nvidia|gpu|gpus|wafer|fab\b|fabs\b|silicon|intel|node process|transistor)/i,
+  ia:      /\b(ai\b|a\.i\.|artificial intelligence|inteligencia artificial|llm|large language|openai|anthropic|deepmind|deepseek|machine learning|neural|chatbot|gen ?ai|agentic|frontier model)/i,
+  robots:  /\b(robot|robots|robotic|humanoid|automation|autonomous|drone|drones|self-driving)/i,
+  energia: /\b(energy|energía|nuclear|solar|battery|batteries|fusion|reactor|wind power|hydrogen|renewabl|grid|lng|electricity|geothermal|power plant|photovoltaic|smr\b)/i,
+  bio:     /\b(biotech|drug|drugs|cancer|gene|genom|crispr|vaccine|clinical trial|fda|protein|pharma|medicine|medical|obesity|alzheimer|antibod|mrna)/i,
+  espacio: /\b(space|rocket|satellite|nasa|spacex|orbit|lunar|mars|launch pad|starship|esa\b|astronaut)/i,
+  infra:   /\b(infrastructure|rail|railway|port\b|ports\b|construction|highway|bridge|data center|datacenter|manufactur|factory|factories|supply chain|shipyard|housing|transmission line)/i,
+  ciencia: /\b(physics|quantum|research|study|discover|scientist|material science|materials|mathemat|telescope|particle|superconduct|biology|chemistry)/i,
+};
+const REGION_KW = {
+  china: /\b(china|chinese|beijing|shanghai|shenzhen|huawei|byd\b|alibaba|tencent|baidu|xiaomi|smic|taiwan|hong kong|xi jinping)/i,
+  us:    /\b(u\.s\.|us\b|united states|american|america\b|washington|california|silicon valley|pentagon|congress|darpa|white house|texas)/i,
+  eu:    /\b(europe|european|e\.u\.|eu\b|brussels|germany|german|france|french|uk\b|britain|british|netherlands|dutch|spain|italy|nordic|sweden|commission)/i,
+};
+
+/* señales de profundidad en titular/descripcion */
+const DEPTH_POS = /\b(analysis|análisis|in-depth|deep dive|explained|explainer|inside|investigation|special report|report:|essay|interview|profile|the future of|the state of|how (the|a|china|america|europe)|why (the|a|china|america|europe)|what.{0,30}means|long read|opinion|perspective|q&a|guide to|anatomy of|case study|white paper)/i;
+const DEPTH_NEG = /\b(launches|launched|raises \$|announces|unveils|shares (rise|fall)|stock (jumps|falls)|earnings|quarterly|hits record|deal of the day|deals:|review:|rumor)/i;
+
+/* ---------- estado ---------- */
+let ITEMS = [];
+let topicFilter = 'all';
+let depthOnly = false;
+let feedsOK = 0, feedsFail = 0;
+
+/* ---------- utilidades ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => { const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; };
+const stripHTML = s => { const d=document.createElement('div'); d.innerHTML=s||''; return (d.textContent||'').replace(/\s+/g,' ').trim(); };
+
+function timeAgo(d){
+  const m = Math.floor((Date.now()-d)/60000);
+  if(m<1) return 'ahora';
+  if(m<60) return 'hace '+m+' min';
+  const h = Math.floor(m/60);
+  if(h<24) return 'hace '+h+' h';
+  const days = Math.floor(h/24);
+  return days===1 ? 'hace 1 día' : 'hace '+days+' días';
+}
+
+function classifyTopic(t){
+  for(const k of ['chips','ia','robots','energia','bio','espacio','infra']) if(TOPICS[k].test(t)) return k;
+  if(TOPICS.ciencia.test(t)) return 'ciencia';
+  return 'general';
+}
+function classifyRegion(t, def){
+  if(REGION_KW.china.test(t)) return 'china';
+  if(REGION_KW.eu.test(t))    return 'eu';
+  if(REGION_KW.us.test(t))    return 'us';
+  return def;
+}
+function depthScore(title, desc, w){
+  let s = w;                                   // peso base de la fuente
+  const blob = title + ' ' + desc;
+  if(DEPTH_POS.test(title)) s += 2;
+  else if(DEPTH_POS.test(blob)) s += 1;
+  if(DEPTH_NEG.test(title)) s -= 1;
+  if(desc.length > 700) s += 1.5;
+  else if(desc.length > 300) s += 0.7;
+  if(title.length > 70) s += 0.4;              // titulares largos ≈ ensayo
+  return Math.max(0, s);
+}
+
+const TOPIC_LABEL = {chips:'Chips',ia:'IA',robots:'Robótica',energia:'Energía',bio:'Bio/Med',espacio:'Espacio',infra:'Infra',ciencia:'Ciencia',general:'General'};
+
+/* ---------- fetch + parse ---------- */
+async function fetchFeed(feed){
+  const key = 'frontera:' + feed.url;
+  try{
+    const cached = JSON.parse(localStorage.getItem(key) || 'null');
+    if(cached && Date.now() - cached.t < CACHE_TTL){ return cached.items; }
+  }catch(e){}
+
+  let xml = null;
+  for(const proxy of proxyOrder(hashStr(feed.url))){
+    try{
+      const r = await fetch(proxy(feed.url), {signal: AbortSignal.timeout(15000)});
+      if(!r.ok) continue;
+      const text = unwrap(await r.text());
+      if(text && (text.includes('<rss') || text.includes('<feed') || text.includes('<rdf'))){ xml = text; break; }
+    }catch(e){ /* siguiente proxy */ }
+  }
+  if(!xml) throw new Error('sin respuesta');
+
+  const doc = new DOMParser().parseFromString(xml, 'text/xml');
+  const nodes = [...doc.querySelectorAll('item, entry')].slice(0, MAX_ITEMS_PER_FEED);
+  const items = nodes.map(n => {
+    const get = sel => { const el = n.querySelector(sel); return el ? el.textContent.trim() : ''; };
+    let link = get('link');
+    if(!link){ const l = n.querySelector('link[href]'); link = l ? l.getAttribute('href') : ''; }
+    const title = stripHTML(get('title'));
+    const descRaw = get('description') || get('summary') ||
+      (n.getElementsByTagName('content\\:encoded')[0]?.textContent) ||
+      (n.querySelector('content')?.textContent) || '';
+    const desc = stripHTML(descRaw).slice(0, 1200);
+    const dateStr = get('pubDate') || get('published') || get('updated') || get('dc\\:date') || '';
+    const date = dateStr ? new Date(dateStr).getTime() : Date.now();
+    return {title, link, desc, date};
+  }).filter(i => i.title && i.link && !isNaN(i.date));
+
+  const out = items.map(i => {
+    const blob = i.title + ' ' + i.desc;
+    return {
+      ...i,
+      source: feed.name,
+      panel: feed.panel,
+      region: classifyRegion(blob, feed.region),
+      topic: classifyTopic(blob),
+      score: depthScore(i.title, i.desc, feed.w),
+    };
+  });
+  try{ localStorage.setItem(key, JSON.stringify({t: Date.now(), items: out})); }catch(e){}
+  return out;
+}
+
+/* ---------- X vía Nitter (RSS) ---------- */
+const XFAILED = [];
+async function fetchX(acc){
+  const key = 'frontera:x:' + acc.handle;
+  try{
+    const cached = JSON.parse(localStorage.getItem(key) || 'null');
+    if(cached && Date.now() - cached.t < CACHE_TTL){ return cached.items; }
+  }catch(e){}
+
+  let xml = null;
+  outer:
+  for(const inst of NITTERS){
+    const feedUrl = inst + '/' + acc.handle + '/rss';
+    for(const proxy of proxyOrder(hashStr(feedUrl)).slice(0,3)){
+      try{
+        const r = await fetch(proxy(feedUrl), {signal: AbortSignal.timeout(12000)});
+        if(!r.ok) continue;
+        const text = unwrap(await r.text());
+        if(text && text.includes('<rss')){ xml = text; break outer; }
+      }catch(e){}
+    }
+  }
+  if(!xml){ XFAILED.push(acc); throw new Error('sin instancia'); }
+
+  const doc = new DOMParser().parseFromString(xml, 'text/xml');
+  const nodes = [...doc.querySelectorAll('item')].slice(0, 8);
+  const items = nodes.map(n => {
+    const get = sel => { const el = n.querySelector(sel); return el ? el.textContent.trim() : ''; };
+    const title = stripHTML(get('title'));
+    let link = get('link') || '';
+    // reescribir el enlace de la instancia nitter hacia x.com
+    try{ const u = new URL(link); link = 'https://x.com' + u.pathname.replace(/#m$/,''); }catch(e){}
+    const dateStr = get('pubDate');
+    const date = dateStr ? new Date(dateStr).getTime() : Date.now();
+    return {title, link, date};
+  }).filter(i => i.title && i.link && !isNaN(i.date));
+
+  const out = items.map(i => ({
+    ...i,
+    desc: '',
+    source: acc.name + ' · @' + acc.handle,
+    panel: 'x',
+    region: classifyRegion(i.title, 'china'),
+    topic: classifyTopic(i.title),
+    score: 0,
+    isTweet: true,
+  }));
+  try{ localStorage.setItem(key, JSON.stringify({t: Date.now(), items: out})); }catch(e){}
+  return out;
+}
+
+/* concurrencia limitada */
+async function runQueue(queue, failed){
+  const workers = Array.from({length:3}, async () => {
+    while(queue.length){
+      const job = queue.shift();
+      try{
+        const items = job.type === 'rss' ? await fetchFeed(job.f) : await fetchX(job.a);
+        ITEMS.push(...items);
+        feedsOK++;
+      }catch(e){ if(failed) failed.push(job); else feedsFail++; }
+      renderAll();
+      $('#feedcount').textContent = `Fuentes: ${feedsOK} ok · ${feedsFail} sin señal · ${queue.length} en cola`;
+    }
+  });
+  await Promise.all(workers);
+}
+
+let LOADING = false;
+async function loadAll(force){
+  if(LOADING) return;            // evita cargas encimadas
+  LOADING = true;
+  $('#refresh').disabled = true;
+  try{
+    if(force){
+      FEEDS.forEach(f => localStorage.removeItem('frontera:'+f.url));
+      XACCOUNTS.forEach(a => localStorage.removeItem('frontera:x:'+a.handle));
+    }
+    ITEMS = []; feedsOK = 0; feedsFail = 0; XFAILED.length = 0;
+    setStatus('Conectando', '');
+    const jobs = [
+      ...FEEDS.map(f => ({type:'rss', f})),
+      ...XACCOUNTS.map(a => ({type:'x', a})),
+    ];
+    const failed = [];
+    await runQueue(jobs, failed);
+    if(failed.length){           // segundo intento para los que fallaron
+      XFAILED.length = 0;
+      setStatus('Reintentando ' + failed.length + ' fuentes', '');
+      await runQueue(failed, null);
+    }
+    const now = new Date();
+    $('#lastupdate').textContent = 'Última actualización: ' + now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+    setStatus(feedsOK ? 'En línea' : 'Sin conexión a fuentes', feedsOK ? 'ok' : 'err');
+    renderAll();
+  } finally {
+    LOADING = false;
+    $('#refresh').disabled = false;
+  }
+}
+
+function setStatus(txt, cls){
+  $('#status').innerHTML = `<span class="dot ${cls}"></span>${txt}`;
+}
+
+/* ---------- render ---------- */
+function depthBar(score){
+  const f = Math.min(5, Math.round(score));
+  let h = '<span class="depthbar" title="Índice de profundidad">';
+  for(let i=1;i<=5;i++) h += `<i class="${i<=f?'f':''}"></i>`;
+  return h + '</span>';
+}
+
+function itemHTML(it, big){
+  const deep = it.score >= 4;
+  return `<article class="item r-${it.region}">
+    <div class="meta">
+      <span class="src">${esc(it.source)}</span>
+      <span>${timeAgo(it.date)}</span>
+      <span class="tag">${TOPIC_LABEL[it.topic]||it.topic}</span>
+      ${deep ? '<span class="badge">A FONDO</span>' : ''}
+      ${depthBar(it.score)}
+    </div>
+    <h3><a href="${esc(it.link)}" target="_blank" rel="noopener">${esc(it.title)}</a></h3>
+    ${it.desc ? `<p>${esc(it.desc.slice(0, big?320:220))}</p>` : ''}
+  </article>`;
+}
+
+function visible(it){
+  if(topicFilter !== 'all' && it.topic !== topicFilter) return false;
+  if(depthOnly && !it.isTweet && it.score < 4) return false;   // el filtro "a fondo" no aplica a X
+  const age = (Date.now()-it.date)/(86400000);
+  const maxAge = it.isTweet ? 7 : MAX_AGE_DAYS;
+  return age <= maxAge && age >= -1;
+}
+
+/* rank híbrido: prioriza profundidad, penaliza antigüedad */
+const rank = it => it.score*2 - ((Date.now()-it.date)/86400000)*0.8;
+
+function renderPanel(panelId, items){
+  const el = $('#b-'+panelId);
+  const c  = $('#c-'+panelId);
+  if(!items.length){
+    el.innerHTML = '<div class="empty">Sin artículos con los filtros actuales.</div>';
+    c.textContent = '0';
+    return;
+  }
+  el.innerHTML = items.map(i => itemHTML(i,false)).join('');
+  c.textContent = items.length;
+}
+
+function renderAll(){
+  const visAll = ITEMS.filter(visible);
+  const tweets = visAll.filter(i => i.isTweet).sort((a,b)=>b.date-a.date);
+  const vis = visAll.filter(i => !i.isTweet);
+  const seen = new Set();
+  const dedup = [];
+  for(const it of vis.sort((a,b)=>rank(b)-rank(a))){
+    const k = it.title.toLowerCase().slice(0,80);
+    if(seen.has(k)) continue;
+    seen.add(k); dedup.push(it);
+  }
+
+  // Hero: top lecturas profundas de cualquier panel (últimas 72 h con prioridad)
+  const hero = dedup.filter(i => i.score >= 4).slice(0, 6);
+  $('#b-hero').innerHTML = hero.length
+    ? hero.map(i => itemHTML(i,true)).join('')
+    : '<div class="empty">Aún no hay lecturas profundas con los filtros actuales.</div>';
+  $('#c-hero').textContent = hero.length;
+
+  const heroLinks = new Set(hero.map(h=>h.link));
+  const rest = dedup.filter(i => !heroLinks.has(i.link));
+
+  // Paneles por región: incluye items de fuentes globales reclasificados por keywords
+  renderPanel('china',    rest.filter(i => i.panel==='china' || (i.panel!=='ciencia' && i.panel!=='reportes' && i.region==='china')).slice(0,40));
+  renderPanel('us',       rest.filter(i => i.panel==='us'    || (i.panel!=='ciencia' && i.panel!=='reportes' && i.region==='us' && i.panel!=='china')).slice(0,40));
+  renderPanel('eu',       rest.filter(i => i.panel==='eu'    || (i.panel!=='ciencia' && i.panel!=='reportes' && i.region==='eu' && i.panel!=='china' && i.panel!=='us')).slice(0,40));
+  renderPanel('ciencia',  rest.filter(i => i.panel==='ciencia').slice(0,40));
+  renderPanel('reportes', rest.filter(i => i.panel==='reportes' || i.score>=5).slice(0,40));
+
+  // Panel X
+  renderX(tweets.slice(0,60));
+}
+
+function renderX(tweets){
+  const el = $('#b-x'); const c = $('#c-x');
+  let html = '';
+  if(tweets.length){
+    html = tweets.map(t => `<article class="item tweet r-${t.region}">
+      <div class="meta">
+        <span class="src">${esc(t.source)}</span>
+        <span>${timeAgo(t.date)}</span>
+        <span class="tag">${TOPIC_LABEL[t.topic]||t.topic}</span>
+      </div>
+      <p class="tw"><a href="${esc(t.link)}" target="_blank" rel="noopener">${esc(t.title.slice(0,360))}</a></p>
+    </article>`).join('');
+  }
+  if(XFAILED.length){
+    const links = XFAILED.map(a => `<a href="https://x.com/${esc(a.handle)}" target="_blank" rel="noopener">@${esc(a.handle)}</a>`).join(' · ');
+    html += `<div class="empty">Sin señal vía RSS (las instancias Nitter van y vienen). Acceso directo: ${links}</div>`;
+  }
+  if(!html) html = '<div class="loading">Buscando instancia disponible</div>';
+  el.innerHTML = html;
+  c.textContent = tweets.length;
+}
+
+/* ---------- interacción ---------- */
+$('#filters').addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if(!chip) return;
+  if(chip.dataset.depth){
+    depthOnly = !depthOnly;
+    chip.classList.toggle('on', depthOnly);
+  }else{
+    document.querySelectorAll('.chip.topic').forEach(c=>c.classList.remove('on'));
+    chip.classList.add('on');
+    topicFilter = chip.dataset.topic;
+  }
+  renderAll();
+});
+
+document.querySelectorAll('.panel-h').forEach(h => {
+  h.addEventListener('click', () => {
+    const p = h.closest('.panel');
+    if(p.id === 'hero') return;
+    p.classList.toggle('collapsed');
+    const t = h.querySelector('.tog');
+    if(t) t.textContent = p.classList.contains('collapsed') ? '▸' : '▾';
+  });
+});
+
+$('#refresh').addEventListener('click', () => loadAll(true));
+
+/* auto-refresh cada 30 min */
+setInterval(() => loadAll(false), 30*60*1000);
+
+loadAll(false);
+</script>
+</body>
+</html>
