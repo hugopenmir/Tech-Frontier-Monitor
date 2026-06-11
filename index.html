@@ -509,7 +509,10 @@ const XACCOUNTS = [
 const NITTERS = [
   'https://xcancel.com',
   'https://nitter.net',
+  'https://lightbrd.com',
+  'https://nitter.space',
   'https://nitter.poast.org',
+  'https://nitter.privacydev.net',
 ];
 
 /* Proxies CORS con fallback en cadena */
@@ -533,7 +536,8 @@ function unwrap(text){
   return text;
 }
 
-const CACHE_TTL = 20 * 60 * 1000;   // 20 min
+const CACHE_TTL = 20 * 60 * 1000;     // 20 min para feeds RSS
+const CACHE_TTL_X = 60 * 60 * 1000;   // 60 min para X (las instancias son volátiles)
 const MAX_ITEMS_PER_FEED = 15;
 const MAX_AGE_DAYS = 10;
 
@@ -670,7 +674,7 @@ async function fetchX(acc){
   const key = 'tfm3:x:' + acc.handle;
   try{
     const cached = JSON.parse(localStorage.getItem(key) || 'null');
-    if(cached && Date.now() - cached.t < CACHE_TTL){ return cached.items; }
+    if(cached && Date.now() - cached.t < CACHE_TTL_X){ return cached.items; }
   }catch(e){}
 
   let xml = null;
