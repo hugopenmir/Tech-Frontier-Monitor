@@ -272,6 +272,46 @@
     .hero-b .item:nth-child(n+4){border-top:1px solid var(--line)}
   }
 
+  /* ---------- YouTube panel ---------- */
+  .panel.ytpanel{background:#100C0E}
+  .panel.ytpanel .panel-h{background:linear-gradient(90deg,#1E1216 0%, #120D10 100%);border-bottom:1px solid #3A2530}
+  .ytmark{
+    font-size:11px;width:24px;height:24px;line-height:24px;text-align:center;
+    color:#fff;background:#E5484D;border-radius:6px;flex:none;
+  }
+  .panel.ytpanel .panel-b{max-height:none}
+  .ytgrid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:14px;padding:14px;
+  }
+  .ytcard{
+    display:flex;flex-direction:column;gap:7px;
+    background:#181014;border:1px solid #34232B;border-radius:10px;
+    padding:9px;text-decoration:none !important;
+    transition:transform .15s ease, border-color .15s ease;
+  }
+  .ytcard:hover{transform:translateY(-2px);border-color:#5A3A48}
+  .thumbwrap{position:relative;display:block;border-radius:6px;overflow:hidden;aspect-ratio:16/9;background:#000}
+  .thumb{width:100%;height:100%;object-fit:cover;display:block}
+  .play{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:26px;color:#fff;background:rgba(0,0,0,.18);
+    opacity:0;transition:opacity .15s ease;text-shadow:0 2px 8px rgba(0,0,0,.7);
+  }
+  .ytcard:hover .play{opacity:1}
+  .yttitle{
+    font-family:var(--serif);font-size:13.5px;font-weight:600;line-height:1.35;color:var(--text);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .thumbwrap{cursor:pointer}
+  .thumbwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .thumbwrap.playing .play{display:none}
+  .yttitle:hover{text-decoration:underline;text-decoration-color:var(--muted)}
+  .ytout{color:#B06A78}
+  .ytout:hover{color:var(--text)}
+  .ytmeta{font-family:var(--mono);font-size:10px;color:var(--muted)}
+  .ytmeta .ytnew{color:#E5484D;font-weight:600;letter-spacing:.06em}
+
   footer{
     max-width:1480px;margin:28px auto 0;padding:14px 24px;
     font-family:var(--mono);font-size:10px;color:var(--muted);
@@ -350,11 +390,19 @@
       <div class="panel-b cols" id="b-x"><div class="loading">Buscando instancia disponible</div></div>
     </section>
   </div>
+
+  <div class="deck" style="grid-template-columns:1fr">
+    <section class="panel ytpanel" data-panel="yt">
+      <div class="panel-h"><span class="ytmark">▶</span><h2>Videos — canales de frontera</h2><span class="count" id="c-yt"></span><span class="tog">▾</span></div>
+      <div class="panel-b" id="b-yt"><div class="loading">Sintonizando canales</div></div>
+    </section>
+  </div>
 </main>
 
 <footer>
   50+ fuentes vía RSS público: medios financieros y de tecnología (Bloomberg, FT, NYT, The Atlantic, Wired, TIME, The Verge, TechCrunch, CNBC, Forbes...), especialistas en China (SCMP, The Wire China, Caixin, TechNode, Pandaily, Sinocism, ChinaTalk, High Capacity, MERICS...), revistas y portales científicos (Nature, Science, Quanta, Scientific American, Nautilus, MIT News, New Scientist...), energía e infraestructura (Bloomberg Green, Utility Dive, Electrek, Construction Physics...), Europa (The Guardian, BBC, El País, Xataka, Sifted, Euractiv, CERN...) y análisis (Stratechery, Understanding AI, Noahpinion, Brookings, Project Syndicate, Our World in Data, Works in Progress...).<br>
   ◆ "A FONDO" = scoring automático por fuente, señales de análisis en el titular y extensión del texto. Cache local de 20 min. ◉ "Temas del día" = entidades más mencionadas en titulares de las últimas 48 h por 2+ fuentes.<br>
+  ▶ Los videos llegan vía el RSS oficial por canal de YouTube; para agregar canales edita el arreglo <b>YTCHANNELS</b> (solo necesitas el @handle).<br>
   𝕏 El panel de voces se lee vía instancias públicas tipo Nitter (xcancel / nitter.net), que pueden caer por temporadas; cuando no hay señal, el panel muestra enlaces directos a cada perfil. Para agregar fuentes o cuentas, edita los arreglos <b>FEEDS</b> y <b>XACCOUNTS</b> al inicio del script.
 </footer>
 
@@ -515,6 +563,55 @@ const XACCOUNTS = [
   {name:'Lex Fridman',      handle:'lexfridman'},
   {name:'Gavin Baker',      handle:'GavinSBaker'},
   {name:'Ed Ludlow',        handle:'EdLudlow'},
+];
+
+/* =========================================================
+   CANALES DE YOUTUBE — configurados por @handle; el tablero
+   resuelve el channel_id automáticamente y lo recuerda.
+   ========================================================= */
+const YTCHANNELS = [
+  {name:'Asianometry',        handle:'Asianometry'},        // semiconductores y tech asiática
+  {name:'Dwarkesh Podcast',   handle:'DwarkeshPatel'},      // entrevistas largas IA/progreso
+  {name:'Lex Fridman',        handle:'lexfridman'},
+  {name:'ColdFusion',         handle:'ColdFusion'},         // documentales tech/negocios
+  {name:'Undecided',          handle:'UndecidedMF'},        // energía y sustentabilidad
+  {name:'Real Engineering',   handle:'RealEngineering'},    // ingeniería e infraestructura
+  {name:'The B1M',            handle:'TheB1M'},             // megaconstrucción
+  {name:'CaspianReport',      handle:'CaspianReport'},      // geopolítica
+  {name:'Cyrus Janssen',      handle:'CyrusJanssen'},       // China
+  {name:'Relentless',         handle:'relentless'},
+  {name:'BYD Global',         handle:'BYDGlobal'},
+  {name:'Max & Noelia',       handle:'maxnoelia'},
+  {name:'Core Memory',        handle:'CoreMemoryPodcast'},
+  {name:'Bloomberg Originals', handle:'BloombergOriginals'},
+  {name:'DW Documental',      handle:'DWDocumental'},
+  {name:'Solkuno',            handle:'Solkuno'},
+  {name:'China Insights',     handle:'ChinaInsights'},
+  {name:'CNBC',               handle:'CNBC'},
+  {name:'CGTN',               handle:'CGTN'},
+  {name:'Richard Aguilar',    handle:'RichardAguilar'},
+  {name:'Tech Wave',          handle:'TechWave'},
+  {name:'StarTalk Plus',      handle:'StarTalkPlus'},
+  {name:'Rowan Cheung',       handle:'RowanCheung'},
+  {name:'Civil Mentors',      handle:'CivilMentors'},
+  {name:'Megaprojects and Places', handle:'MegaprojectsandPlaces'},
+  {name:'China Unpacked',     handle:'ChinaUnpacked'},
+  {name:'New China TV',       handle:'NewChinaTV'},
+  {name:'High Capacity',      handle:'HighCapacity'},
+  {name:'Hard Fork',          handle:'hardfork'},
+  {name:'Veritasium',         handle:'veritasium'},
+  {name:'Wall Street Journal', handle:'wsj'},
+  {name:'CNA Insider',        handle:'CNAInsider'},
+  {name:'CSIS',               handle:'CSIS'},
+  {name:'Joe Scott',          handle:'joescott'},
+  {name:'Bloomberg Television', handle:'markets'},
+  {name:'Interesting Times',  handle:'InterestingTimesNYT'},
+  {name:'Financial Times',    handle:'FinancialTimes'},
+  {name:'BBC World Service',  handle:'BBCWorldService'},
+  {name:'CNA',                handle:'CNA'},
+  {name:'Astrum',             handle:'astrumspace'},
+  {name:'Celestium',          handle:'Celestium'},
+  {name:'Joanna Stern',       handle:'joannastern'},
 ];
 
 /* Instancias Nitter/forks con RSS público (van en cascada) */
@@ -739,14 +836,78 @@ async function fetchX(acc){
   return out;
 }
 
+/* ---------- YouTube: resolver canal y leer su RSS oficial ---------- */
+const YTFAILED = [];
+async function fetchYT(ch){
+  const key = 'tfm3:yt:' + ch.handle;
+  try{
+    const cached = JSON.parse(localStorage.getItem(key) || 'null');
+    if(cached && Date.now() - cached.t < CACHE_TTL_X){ return cached.items; }
+  }catch(e){}
+
+  // 1) resolver channel_id (una sola vez, queda guardado)
+  let id = localStorage.getItem('tfm3:ytid:' + ch.handle);
+  if(!id){
+    for(const proxy of proxyOrder(hashStr('yt'+ch.handle)).slice(0,3)){
+      try{
+        const r = await fetch(proxy('https://www.youtube.com/@' + ch.handle), {signal: AbortSignal.timeout(9000)});
+        if(!r.ok) continue;
+        const t = unwrap(await r.text());
+        const m = t && t.match(/"channelId":"(UC[0-9A-Za-z_-]{22})"/);
+        if(m){ id = m[1]; localStorage.setItem('tfm3:ytid:' + ch.handle, id); break; }
+      }catch(e){}
+    }
+  }
+  if(!id){ YTFAILED.push(ch); throw new Error('canal no resuelto'); }
+
+  // 2) feed RSS oficial del canal
+  let xml = null;
+  const feedUrl = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + id;
+  for(const proxy of proxyOrder(hashStr(feedUrl))){
+    try{
+      const r = await fetch(proxy(feedUrl), {signal: AbortSignal.timeout(9000)});
+      if(!r.ok) continue;
+      const t = unwrap(await r.text());
+      if(t && t.includes('<feed')){ xml = t; break; }
+    }catch(e){}
+  }
+  if(!xml){ YTFAILED.push(ch); throw new Error('sin feed'); }
+
+  const doc = new DOMParser().parseFromString(xml, 'text/xml');
+  const entries = [...doc.getElementsByTagName('entry')].slice(0, 6);
+  const out = entries.map(n => {
+    const get = tag => { const el = n.getElementsByTagName(tag)[0]; return el ? el.textContent.trim() : ''; };
+    const vid = get('yt:videoId');
+    const title = stripHTML(get('title'));
+    const dateStr = get('published');
+    const date = dateStr ? new Date(dateStr).getTime() : Date.now();
+    const topics = classifyTopics(title);
+    return {
+      __k: 'yt:' + ch.handle,
+      title, vid,
+      link: 'https://www.youtube.com/watch?v=' + vid,
+      desc: '',
+      date,
+      source: ch.name,
+      panel: 'yt',
+      region: classifyRegion(title, 'global'),
+      topic: topics[0], topics,
+      score: 0,
+      isVideo: true,
+    };
+  }).filter(i => i.title && i.vid && !isNaN(i.date));
+  try{ localStorage.setItem(key, JSON.stringify({t: Date.now(), items: out})); }catch(e){}
+  return out;
+}
+
 /* concurrencia limitada */
 async function runQueue(queue, failed){
   const workers = Array.from({length:6}, async () => {
     while(queue.length){
       const job = queue.shift();
-      const jobKey = job.type === 'rss' ? job.f.url : 'x:' + job.a.handle;
+      const jobKey = job.type === 'rss' ? job.f.url : (job.type === 'x' ? 'x:' + job.a.handle : 'yt:' + job.ch.handle);
       try{
-        const items = job.type === 'rss' ? await fetchFeed(job.f) : await fetchX(job.a);
+        const items = job.type === 'rss' ? await fetchFeed(job.f) : (job.type === 'x' ? await fetchX(job.a) : await fetchYT(job.ch));
         ITEMS = ITEMS.filter(i => i.__k !== jobKey);
         ITEMS.push(...items);
         feedsOK++;
@@ -769,7 +930,7 @@ async function loadAll(force){
       FEEDS.forEach(f => localStorage.removeItem('tfm3:'+f.url));
       XACCOUNTS.forEach(a => localStorage.removeItem('tfm3:x:'+a.handle));
     }
-    ITEMS = []; feedsOK = 0; feedsFail = 0; XFAILED.length = 0;
+    ITEMS = []; feedsOK = 0; feedsFail = 0; XFAILED.length = 0; YTFAILED.length = 0;
     // pintar de inmediato con lo que haya en cache (aunque esté vencido) y refrescar al fondo
     if(!force){
       try{
@@ -786,6 +947,7 @@ async function loadAll(force){
     const jobs = [
       ...FEEDS.map(f => ({type:'rss', f})),
       ...XACCOUNTS.map(a => ({type:'x', a})),
+      ...YTCHANNELS.map(ch => ({type:'yt', ch})),
     ];
     const failed = [];
     await runQueue(jobs, failed);
@@ -838,7 +1000,7 @@ function visible(it){
   if(topicFilter !== 'all' && !(it.topics || [it.topic]).includes(topicFilter)) return false;
   if(depthOnly && !it.isTweet && it.score < 4) return false;   // el filtro "a fondo" no aplica a X
   const age = (Date.now()-it.date)/(86400000);
-  const maxAge = it.isTweet ? 7 : MAX_AGE_DAYS;
+  const maxAge = it.isTweet ? 7 : (it.isVideo ? 21 : MAX_AGE_DAYS);
   return age <= maxAge && age >= -1;
 }
 
@@ -912,7 +1074,8 @@ function renderPanel(panelId, items){
 function renderAll(){
   const visAll = ITEMS.filter(visible);
   const tweets = visAll.filter(i => i.isTweet).sort((a,b)=>b.date-a.date);
-  const vis = visAll.filter(i => !i.isTweet);
+  const videos = visAll.filter(i => i.isVideo).sort((a,b)=>b.date-a.date);
+  const vis = visAll.filter(i => !i.isTweet && !i.isVideo);
   const seen = new Set();
   const dedup = [];
   for(const it of vis.sort((a,b)=>rank(b)-rank(a))){
@@ -947,6 +1110,9 @@ function renderAll(){
 
   // Panel X: representación garantizada de todas las cuentas
   renderX(tweets);
+
+  // Panel YouTube
+  renderYT(videos);
 
   // Pulso temático
   renderTopicCounts();
@@ -990,6 +1156,37 @@ function renderX(tweets){
   if(!html) html = '<div class="loading">Buscando instancia disponible</div>';
   el.innerHTML = html;
   c.textContent = tweets.length;
+}
+
+function renderYT(videos){
+  const el = $('#b-yt'); const c = $('#c-yt');
+  // equilibrio: hasta 2 videos recientes por canal, luego por recencia
+  const byCh = {};
+  for(const v of videos){ (byCh[v.source] = byCh[v.source] || []).push(v); }
+  const picked = [];
+  for(const arr of Object.values(byCh)) picked.push(...arr.slice(0,2));
+  const inPicked = new Set(picked);
+  const fill = videos.filter(v => !inPicked.has(v));
+  videos = picked.sort((a,b)=>b.date-a.date).concat(fill).slice(0,48);
+  let html = '';
+  if(videos.length){
+    html = '<div class="ytgrid">' + videos.map(v => `
+      <div class="ytcard">
+        <span class="thumbwrap" data-vid="${esc(v.vid)}" role="button" tabindex="0" title="Reproducir aquí">
+          <img class="thumb" loading="lazy" src="https://i.ytimg.com/vi/${esc(v.vid)}/mqdefault.jpg" alt="">
+          <span class="play">▶</span>
+        </span>
+        <a class="yttitle" href="${esc(v.link)}" target="_blank" rel="noopener">${esc(v.title)}</a>
+        <span class="ytmeta">${esc(v.source)} · ${timeAgo(v.date)}${(Date.now()-v.date) < 24*3600*1000 ? ' · <b class="ytnew">NUEVO</b>' : ''} · <a class="ytout" href="${esc(v.link)}" target="_blank" rel="noopener">YouTube ↗</a></span>
+      </div>`).join('') + '</div>';
+  }
+  if(YTFAILED.length){
+    const links = [...new Set(YTFAILED.map(ch => ch.handle))].map(h => `<a href="https://www.youtube.com/@${esc(h)}" target="_blank" rel="noopener">@${esc(h)}</a>`).join(' · ');
+    html += `<div class="empty">Canales sin señal por ahora: ${links}</div>`;
+  }
+  if(!html) html = '<div class="loading">Sintonizando canales</div>';
+  el.innerHTML = html;
+  c.textContent = videos.length;
 }
 
 /* pulso temático: conteo por tema (ignorando el filtro de tema activo) */
@@ -1039,6 +1236,19 @@ document.querySelectorAll('.panel-h').forEach(h => {
     const t = h.querySelector('.tog');
     if(t) t.textContent = p.classList.contains('collapsed') ? '▸' : '▾';
   });
+});
+
+/* reproducir videos dentro del tablero (lite embed: el iframe solo nace al clic) */
+$('#b-yt').addEventListener('click', e => {
+  const tw = e.target.closest('.thumbwrap');
+  if(!tw || tw.classList.contains('playing')) return;
+  const vid = tw.dataset.vid;
+  if(!vid) return;
+  tw.classList.add('playing');
+  tw.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + vid +
+    '?autoplay=1&rel=0" title="Video" frameborder="0" ' +
+    'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+    'allowfullscreen></iframe>';
 });
 
 $('#refresh').addEventListener('click', () => loadAll(true));
