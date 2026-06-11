@@ -182,23 +182,6 @@
   .chip .n{opacity:.55;margin-left:5px;font-weight:400}
   .chip.on .n{opacity:.75}
 
-  /* ---------- temas del día ---------- */
-  .topics{
-    max-width:1480px;margin:16px auto 0;padding:0 24px;
-    display:flex;gap:8px;flex-wrap:wrap;align-items:center;
-    font-family:var(--mono);
-  }
-  .topics .lbl{font-size:10px;color:var(--muted);letter-spacing:.12em}
-  .topics .tchip{
-    font-family:var(--mono);font-size:11px;cursor:pointer;
-    border:1px solid var(--line);border-radius:3px;
-    background:var(--panel);color:var(--text);
-    padding:4px 10px;
-  }
-  .topics .tchip b{color:var(--depth);font-weight:600;margin-left:5px}
-  .topics .tchip:hover{border-color:var(--muted)}
-  .topics .tchip.on{background:var(--depth);color:var(--bg);border-color:var(--depth)}
-  .topics .tchip.on b{color:var(--bg)}
 
   /* ---------- leyenda del score ---------- */
   #depthhelp{
@@ -209,39 +192,65 @@
   #depthhelp.show{display:block}
 
   /* ---------- X panel: muro de tarjetas, identidad propia ---------- */
-  .panel.xpanel{background:#0A0E14}
-  .panel.xpanel .panel-h{background:#0D1320}
+  .panel.xpanel{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(69,184,232,.05), transparent 45%),
+      radial-gradient(circle at 85% 100%, rgba(229,72,77,.05), transparent 45%),
+      #090D13;
+  }
+  .panel.xpanel .panel-h{
+    background:linear-gradient(90deg,#10182A 0%, #0C1220 100%);
+    border-bottom:1px solid #2A3850;
+  }
   .xmark{
-    font-size:15px;font-weight:700;width:18px;text-align:center;
-    color:var(--text);flex:none;font-family:var(--mono);
+    font-size:16px;font-weight:700;width:24px;height:24px;line-height:24px;text-align:center;
+    color:#0D1219;background:var(--text);border-radius:6px;
+    flex:none;font-family:var(--mono);
   }
   .panel-b.cols{
-    column-count:3;column-gap:12px;max-height:560px;padding:12px;
+    column-count:3;column-gap:14px;max-height:620px;padding:14px;
   }
   @media(max-width:1100px){.panel-b.cols{column-count:1}}
   .item.tweet{
-    break-inside:avoid;display:block;
-    background:var(--panel2);
-    border:1px solid var(--line);border-left:1px solid var(--line);
-    border-radius:8px;margin:0 0 12px;padding:11px 13px;
+    break-inside:avoid;display:block;position:relative;
+    background:linear-gradient(180deg,#141D2B 0%, #101723 100%);
+    border:1px solid #273548;
+    border-radius:10px;margin:0 0 14px;padding:12px 14px 10px;
+    transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
   }
-  .item.tweet.r-china{border-top:2px solid var(--china)}
-  .item.tweet.r-us{border-top:2px solid var(--us)}
-  .item.tweet.r-eu{border-top:2px solid var(--eu)}
-  .item.tweet.r-global{border-top:2px solid #3A4A5C}
-  .item.tweet .meta{margin-bottom:7px}
+  .item.tweet:hover{
+    transform:translateY(-2px);
+    border-color:#3D5070;
+    box-shadow:0 6px 18px rgba(0,0,0,.35);
+  }
+  .item.tweet::before{
+    content:'';position:absolute;top:0;left:14px;right:14px;height:2px;
+    border-radius:0 0 2px 2px;background:#3A4A5C;
+  }
+  .item.tweet.r-china::before{background:var(--china)}
+  .item.tweet.r-us::before{background:var(--us)}
+  .item.tweet.r-eu::before{background:var(--eu)}
+  .item.tweet{border-left:1px solid #273548 !important}
+  .item.tweet .meta{margin-bottom:8px}
   .av{
-    width:22px;height:22px;border-radius:50%;flex:none;
+    width:26px;height:26px;border-radius:50%;flex:none;
     display:inline-flex;align-items:center;justify-content:center;
-    font-family:var(--mono);font-size:9px;font-weight:600;color:#0D1219;
+    font-family:var(--mono);font-size:10px;font-weight:600;color:#0D1219;
+    box-shadow:0 0 0 2px rgba(233,228,216,.12);
   }
-  .item.tweet .handle{color:var(--muted);font-weight:400}
+  .item.tweet .src{font-size:11px}
+  .item.tweet .handle{color:#5C7DA6;font-weight:400}
   .item.tweet .tw{
     -webkit-line-clamp:7;
-    color:var(--text);font-family:var(--mono);
-    font-size:12px;line-height:1.6;margin-top:0;
+    color:#D7DDE7;font-family:var(--mono);
+    font-size:12px;line-height:1.65;margin-top:0;
   }
   .item.tweet .tw a:hover{text-decoration-color:var(--muted)}
+  .item.tweet .xgo{
+    display:block;margin-top:8px;text-align:right;
+    font-family:var(--mono);font-size:9.5px;color:#5C7DA6;letter-spacing:.06em;
+  }
+  .item.tweet:hover .xgo{color:var(--text)}
 
   /* ---------- A FONDO hero strip ---------- */
   .hero{
@@ -301,9 +310,6 @@
   <div id="depthhelp">◆ Índice de profundidad (barrita de 5): combina el peso editorial de la fuente (un ensayo de SemiAnalysis pesa más que una nota de agencia), señales de análisis en el titular ("analysis", "deep dive", "inside"...) y la extensión del texto. 4 o más = badge A FONDO. · NUEVO = publicado hace menos de 6 horas. · Los números junto a cada tema indican cuántos artículos hay disponibles hoy.</div>
 </div>
 
-<div class="topics" id="topics" style="display:none">
-  <span class="lbl">◉ TEMAS DEL DÍA</span>
-</div>
 
 <main>
   <!-- Signature: deep-read radar -->
@@ -340,7 +346,7 @@
 
   <div class="deck" style="grid-template-columns:1fr">
     <section class="panel xpanel" data-panel="x">
-      <div class="panel-h"><span class="xmark">𝕏</span><h2>Voces en X — analistas de China tech</h2><span class="count" id="c-x"></span><span class="tog">▾</span></div>
+      <div class="panel-h"><span class="xmark">𝕏</span><h2>Voces en X — tecnología, ciencia y geopolítica</h2><span class="count" id="c-x"></span><span class="tog">▾</span></div>
       <div class="panel-b cols" id="b-x"><div class="loading">Buscando instancia disponible</div></div>
     </section>
   </div>
@@ -556,50 +562,8 @@ const DEPTH_NEG = /\b(launches|launched|raises \$|announces|unveils|shares (rise
 let ITEMS = [];
 let topicFilter = 'all';
 let depthOnly = false;
-let entityFilter = null;
 let feedsOK = 0, feedsFail = 0;
 
-/* ---------- temas del día (entidades más mencionadas, últimas 48 h) ---------- */
-const STOP = new Set(['The','This','That','These','Those','What','Why','How','When','Where','Who','Which','While','With','Without','From','After','Before','Inside','Will','Would','Could','Should','Has','Have','Had','Are','Was','Were','You','Your','Its','It\u2019s','But','Not','And','For','More','Most','First','Last','Next','New','Big','Top','Their','They','About','Into','Over','Under','Just','Now','Here','There','Says','Said','Say','Can','May','Might','Get','Gets','Make','Makes','Still','Even','Amid','Despite','Between','Against','Among','Behind','Beyond','Toward',
-'China','Chinese','America','American','Americans','Europe','European','Beijing','Washington','Brussels','US','USA','U.S.','EU','E.U.','UK','U.K.',
-'Tech','Technology','News','Report','Analysis','Today','Week','Year','World','Global','Daily','Opinion',
-'El','La','Los','Las','Un','Una','Unos','Unas','De','Del','En','Con','Por','Para','Que','Qué','Cómo','Cuando','Donde','Más','Así','Este','Esta','Estos','Estas','Los','Sus','Una']);
-
-function computeDayTopics(){
-  const cutoff = Date.now() - 48*3600*1000;
-  const map = {};
-  for(const it of ITEMS){
-    if(it.date < cutoff) continue;
-    const words = it.title.split(/\s+/);
-    const seen = new Set();
-    for(let i=0;i<words.length;i++){
-      const w = words[i].replace(/[^A-Za-z0-9&\-\.]/g,'').replace(/\.+$/,'');
-      if(w.length < 3 || w.length > 24) continue;
-      const isAllCaps = /^[A-Z0-9&\-\.]+$/.test(w) && /[A-Z]/.test(w);   // TSMC, OpenAI no, NVIDIA sí
-      const isCapWord = /^[A-Z][a-z]/.test(w) && i > 0;                  // Nombres propios no iniciales
-      const isMixed   = /^[A-Z][a-z]*[A-Z]/.test(w);                     // OpenAI, DeepSeek, SpaceX
-      if(!(isAllCaps || isCapWord || isMixed)) continue;
-      if(STOP.has(w) || seen.has(w)) continue;
-      seen.add(w);
-      if(!map[w]) map[w] = {n:0, src:new Set()};
-      map[w].n++; map[w].src.add(it.source);
-    }
-  }
-  return Object.entries(map)
-    .filter(([k,v]) => v.n >= 3 && v.src.size >= 2)
-    .sort((a,b) => b[1].n - a[1].n)
-    .slice(0, 8);
-}
-
-function renderDayTopics(){
-  const el = $('#topics');
-  const tops = computeDayTopics();
-  if(!tops.length){ el.style.display = 'none'; if(entityFilter){entityFilter=null;} return; }
-  el.style.display = 'flex';
-  el.innerHTML = '<span class="lbl">◉ TEMAS DEL DÍA</span>' + tops.map(([k,v]) =>
-    `<button class="tchip ${entityFilter===k?'on':''}" data-ent="${esc(k)}">${esc(k)}<b>×${v.n}</b></button>`
-  ).join('');
-}
 
 /* ---------- utilidades ---------- */
 const $ = s => document.querySelector(s);
@@ -648,7 +612,7 @@ const TOPIC_LABEL = {chips:'Chips',ia:'IA',robots:'Robótica',energia:'Energía'
 
 /* ---------- fetch + parse ---------- */
 async function fetchFeed(feed){
-  const key = 'tfm2:' + feed.url;
+  const key = 'tfm3:' + feed.url;
   try{
     const cached = JSON.parse(localStorage.getItem(key) || 'null');
     if(cached && Date.now() - cached.t < CACHE_TTL){ return cached.items; }
@@ -657,7 +621,7 @@ async function fetchFeed(feed){
   let xml = null;
   for(const proxy of proxyOrder(hashStr(feed.url))){
     try{
-      const r = await fetch(proxy(feed.url), {signal: AbortSignal.timeout(15000)});
+      const r = await fetch(proxy(feed.url), {signal: AbortSignal.timeout(9000)});
       if(!r.ok) continue;
       const text = unwrap(await r.text());
       if(text && (text.includes('<rss') || text.includes('<feed') || text.includes('<rdf'))){ xml = text; break; }
@@ -686,6 +650,7 @@ async function fetchFeed(feed){
     const topics = classifyTopics(blob);
     return {
       ...i,
+      __k: feed.url,
       source: feed.name,
       panel: feed.panel,
       region: classifyRegion(blob, feed.region),
@@ -702,7 +667,7 @@ async function fetchFeed(feed){
 const XFAILED = [];
 const NSTATS = {};   // salud por instancia: si falla mucho sin ningún éxito, se omite en esta sesión
 async function fetchX(acc){
-  const key = 'tfm2:x:' + acc.handle;
+  const key = 'tfm3:x:' + acc.handle;
   try{
     const cached = JSON.parse(localStorage.getItem(key) || 'null');
     if(cached && Date.now() - cached.t < CACHE_TTL){ return cached.items; }
@@ -716,7 +681,7 @@ async function fetchX(acc){
     const feedUrl = inst + '/' + acc.handle + '/rss';
     for(const proxy of proxyOrder(hashStr(feedUrl)).slice(0,2)){
       try{
-        const r = await fetch(proxy(feedUrl), {signal: AbortSignal.timeout(12000)});
+        const r = await fetch(proxy(feedUrl), {signal: AbortSignal.timeout(8000)});
         if(!r.ok) continue;
         const text = unwrap(await r.text());
         if(text && text.includes('<rss')){ xml = text; st.ok++; break outer; }
@@ -743,6 +708,7 @@ async function fetchX(acc){
     const topics = classifyTopics(i.title);
     return {
       ...i,
+      __k: 'x:' + acc.handle,
       desc: '',
       source: acc.name + ' · @' + acc.handle,
       panel: 'x',
@@ -759,11 +725,13 @@ async function fetchX(acc){
 
 /* concurrencia limitada */
 async function runQueue(queue, failed){
-  const workers = Array.from({length:3}, async () => {
+  const workers = Array.from({length:6}, async () => {
     while(queue.length){
       const job = queue.shift();
+      const jobKey = job.type === 'rss' ? job.f.url : 'x:' + job.a.handle;
       try{
         const items = job.type === 'rss' ? await fetchFeed(job.f) : await fetchX(job.a);
+        ITEMS = ITEMS.filter(i => i.__k !== jobKey);
         ITEMS.push(...items);
         feedsOK++;
       }catch(e){ if(failed) failed.push(job); else feedsFail++; }
@@ -772,6 +740,7 @@ async function runQueue(queue, failed){
     }
   });
   await Promise.all(workers);
+  checkGaps();
 }
 
 let LOADING = false;
@@ -781,11 +750,23 @@ async function loadAll(force){
   $('#refresh').disabled = true;
   try{
     if(force){
-      FEEDS.forEach(f => localStorage.removeItem('tfm2:'+f.url));
-      XACCOUNTS.forEach(a => localStorage.removeItem('tfm2:x:'+a.handle));
+      FEEDS.forEach(f => localStorage.removeItem('tfm3:'+f.url));
+      XACCOUNTS.forEach(a => localStorage.removeItem('tfm3:x:'+a.handle));
     }
     ITEMS = []; feedsOK = 0; feedsFail = 0; XFAILED.length = 0;
-    setStatus('Conectando', '');
+    // pintar de inmediato con lo que haya en cache (aunque esté vencido) y refrescar al fondo
+    if(!force){
+      try{
+        for(let i = 0; i < localStorage.length; i++){
+          const k = localStorage.key(i);
+          if(!k || !k.startsWith('tfm3:')) continue;
+          const cached = JSON.parse(localStorage.getItem(k) || 'null');
+          if(cached && Array.isArray(cached.items)) ITEMS.push(...cached.items);
+        }
+        if(ITEMS.length) renderAll();
+      }catch(e){}
+    }
+    setStatus('Actualizando', '');
     const jobs = [
       ...FEEDS.map(f => ({type:'rss', f})),
       ...XACCOUNTS.map(a => ({type:'x', a})),
@@ -840,7 +821,6 @@ function itemHTML(it, big){
 function visible(it){
   if(topicFilter !== 'all' && !(it.topics || [it.topic]).includes(topicFilter)) return false;
   if(depthOnly && !it.isTweet && it.score < 4) return false;   // el filtro "a fondo" no aplica a X
-  if(entityFilter && !it.title.toLowerCase().includes(entityFilter.toLowerCase())) return false;
   const age = (Date.now()-it.date)/(86400000);
   const maxAge = it.isTweet ? 7 : MAX_AGE_DAYS;
   return age <= maxAge && age >= -1;
@@ -854,7 +834,7 @@ const rank = it => it.score*2 - ((Date.now()-it.date)/86400000)*0.8;
    los filtros activos, se consulta Google News RSS con una
    búsqueda dirigida (región + tema) y se inyectan resultados.
    ========================================================= */
-const GAP_REGION_Q = {china:'China', us:'United States', eu:'Europe'};
+const GAP_PANEL_Q = {china:'China', us:'United States', eu:'Europe', ciencia:'scientific research', reportes:'in-depth analysis'};
 const GAP_TOPIC_Q = {
   all:'technology innovation', general:'technology innovation',
   chips:'semiconductors chips', ia:'artificial intelligence',
@@ -863,16 +843,17 @@ const GAP_TOPIC_Q = {
   infra:'infrastructure manufacturing', ciencia:'science research',
 };
 const gapTried = new Set();
+const gapStatus = {};   // panel -> 'pending' | 'failed'
 let lastCounts = {};
 
 async function gapFill(regionPanel, topic){
-  const q = entityFilter
-    ? entityFilter + ' ' + GAP_REGION_Q[regionPanel]
-    : GAP_REGION_Q[regionPanel] + ' ' + (GAP_TOPIC_Q[topic] || GAP_TOPIC_Q.all);
-  const key = regionPanel + ':' + topic + ':' + (entityFilter||'');
+  const q = (GAP_PANEL_Q[regionPanel] || '') + ' ' + (GAP_TOPIC_Q[topic] || GAP_TOPIC_Q.all);
+  const key = regionPanel + ':' + topic;
   if(gapTried.has(key)) return;
   gapTried.add(key);
-  const url = 'https://news.google.com/rss/search?q=' + encodeURIComponent(q + ' when:7d') + '&hl=en-US&gl=US&ceid=US:en';
+  const url = 'https://news.google.com/rss/search?q=' + encodeURIComponent(q.trim() + ' when:7d') + '&hl=en-US&gl=US&ceid=US:en';
+  gapStatus[regionPanel] = 'pending';
+  renderAll();
   try{
     const items = await fetchFeed({name:'Google News', url, region:regionPanel, panel:regionPanel, w:1});
     items.forEach(i => {
@@ -884,13 +865,14 @@ async function gapFill(regionPanel, topic){
       if(topic !== 'all') i.topics = Array.from(new Set([...(i.topics||[]), topic]));
     });
     ITEMS.push(...items);
+    delete gapStatus[regionPanel];
     renderAll();
-  }catch(e){ /* sin relleno disponible */ }
+  }catch(e){ gapStatus[regionPanel] = 'failed'; renderAll(); }
 }
 
 function checkGaps(){
-  if(LOADING || ITEMS.length < 10 || depthOnly) return;   // no rellenar a medias ni en modo "a fondo"
-  for(const p of ['china','us','eu']){
+  if(ITEMS.length < 30 || depthOnly) return;   // esperar masa crítica; en modo "a fondo" no se rellena
+  for(const p of ['china','us','eu','ciencia','reportes']){
     if(!lastCounts[p]) gapFill(p, topicFilter);
   }
 }
@@ -899,7 +881,11 @@ function renderPanel(panelId, items){
   const el = $('#b-'+panelId);
   const c  = $('#c-'+panelId);
   if(!items.length){
-    el.innerHTML = '<div class="empty">Sin artículos con los filtros actuales.</div>';
+    let msg = 'Sin artículos con los filtros actuales.';
+    if(gapStatus[panelId] === 'pending') msg = 'Consultando cobertura adicional en Google News…';
+    else if(gapStatus[panelId] === 'failed') msg = 'Sin resultados por ahora — prueba ↻ Actualizar.';
+    else if(depthOnly) msg = 'Sin lecturas A FONDO aquí — desactiva ◆ para ver todo.';
+    el.innerHTML = '<div class="empty">' + msg + '</div>';
     c.textContent = '0';
     return;
   }
@@ -937,20 +923,29 @@ function renderAll(){
   renderPanel('china', aChina);
   renderPanel('us', aUS);
   renderPanel('eu', aEU);
-  renderPanel('ciencia',  rest.filter(i => i.panel==='ciencia').slice(0,40));
-  renderPanel('reportes', rest.filter(i => i.panel==='reportes' || i.score>=5).slice(0,40));
-  lastCounts = {china:aChina.length, us:aUS.length, eu:aEU.length};
+  const aCi = rest.filter(i => i.panel==='ciencia').slice(0,40);
+  const aRe = rest.filter(i => i.panel==='reportes' || i.score>=5).slice(0,40);
+  renderPanel('ciencia',  aCi);
+  renderPanel('reportes', aRe);
+  lastCounts = {china:aChina.length, us:aUS.length, eu:aEU.length, ciencia:aCi.length, reportes:aRe.length};
 
-  // Panel X
-  renderX(tweets.slice(0,60));
+  // Panel X: representación garantizada de todas las cuentas
+  renderX(tweets);
 
-  // Temas del día + pulso temático
-  renderDayTopics();
+  // Pulso temático
   renderTopicCounts();
 }
 
 function renderX(tweets){
   const el = $('#b-x'); const c = $('#c-x');
+  // equilibrio: hasta 3 posts recientes por cuenta, luego el resto por recencia
+  const byAcc = {};
+  for(const t of tweets){ (byAcc[t.source] = byAcc[t.source] || []).push(t); }
+  const picked = [];
+  for(const arr of Object.values(byAcc)) picked.push(...arr.slice(0,3));
+  const inPicked = new Set(picked);
+  const fill = tweets.filter(t => !inPicked.has(t));
+  tweets = picked.sort((a,b)=>b.date-a.date).concat(fill).slice(0,150);
   let html = '';
   if(tweets.length){
     html = tweets.map(t => {
@@ -968,6 +963,7 @@ function renderX(tweets){
         ${(Date.now()-t.date) < 6*3600*1000 ? '<span class="newdot">NUEVO</span>' : ''}
       </div>
       <p class="tw"><a href="${esc(t.link)}" target="_blank" rel="noopener">${esc(t.title.slice(0,360))}</a></p>
+      <a class="xgo" href="${esc(t.link)}" target="_blank" rel="noopener">Ver en X ↗</a>
     </article>`;
     }).join('');
   }
@@ -1018,12 +1014,6 @@ $('#filters').addEventListener('click', e => {
   checkGaps();
 });
 
-$('#topics').addEventListener('click', e => {
-  const t = e.target.closest('.tchip');
-  if(!t) return;
-  entityFilter = (entityFilter === t.dataset.ent) ? null : t.dataset.ent;
-  renderAll();
-});
 
 document.querySelectorAll('.panel-h').forEach(h => {
   h.addEventListener('click', () => {
