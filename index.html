@@ -341,10 +341,17 @@
   <button class="chip topic on" data-topic="all">Todos</button>
   <button class="chip topic" data-topic="chips">Chips</button>
   <button class="chip topic" data-topic="ia">IA</button>
+  <button class="chip topic" data-topic="quantum">Quantum</button>
   <button class="chip topic" data-topic="robots">Robótica</button>
   <button class="chip topic" data-topic="energia">Energía</button>
+  <button class="chip topic" data-topic="nuclear">Nuclear</button>
+  <button class="chip topic" data-topic="evs">EVs</button>
+  <button class="chip topic" data-topic="materiales">Materiales</button>
+  <button class="chip topic" data-topic="telecom">Telecom</button>
+  <button class="chip topic" data-topic="politica">Política tech</button>
   <button class="chip topic" data-topic="bio">Bio / Medicina</button>
   <button class="chip topic" data-topic="espacio">Espacio</button>
+  <button class="chip topic" data-topic="military">Defensa</button>
   <button class="chip topic" data-topic="infra">Infraestructura</button>
   <button class="chip topic" data-topic="ciencia">Ciencia</button>
   <div id="depthhelp">◆ Índice de profundidad (barrita de 5): combina el peso editorial de la fuente (un ensayo de SemiAnalysis pesa más que una nota de agencia), señales de análisis en el titular ("analysis", "deep dive", "inside"...) y la extensión del texto. 4 o más = badge A FONDO. · NUEVO = publicado hace menos de 6 horas. · Los números junto a cada tema indican cuántos artículos hay disponibles hoy.</div>
@@ -571,7 +578,6 @@ const XACCOUNTS = [
    ========================================================= */
 const YTCHANNELS = [
   // Formatos aceptados: {name, handle} · {name, id:'UC...'} · {name, playlist:'PL...'}
-  {name:'Morse',            handle:'ti_morse'},
   {name:'BYD Global',       handle:'BYDGlobal'},
   {name:'Max & Noelia',     handle:'maxynoelia1'},
   {name:'Core Memory',      handle:'CoreMemoryPodcast'},
@@ -648,7 +654,14 @@ const TOPICS = {
   bio:     /\b(biotech|drug|drugs|cancer|gene|genom|crispr|vaccine|clinical trial|fda|protein|pharma|medicine|medical|obesity|alzheimer|antibod|mrna)/i,
   espacio: /\b(space|rocket|satellite|nasa|spacex|orbit|lunar|mars|launch pad|starship|esa\b|astronaut)/i,
   infra:   /\b(infrastructure|rail|railway|port\b|ports\b|construction|highway|bridge|data center|datacenter|manufactur|factory|factories|supply chain|shipyard|housing|transmission line)/i,
-  ciencia: /\b(physics|quantum|research|study|discover|scientist|material science|materials|mathemat|telescope|particle|superconduct|biology|chemistry)/i,
+  ciencia: /\b(physics|physicist|quantum|mathemat|telescope|particle (physics|accelerator|collider)|superconduct|breakthrough|nobel|dark matter|black holes?|genome|evolution|neuroscience|paleontolog|archaeolog|fossil|astronom|chemistry|chemists?\b|biolog(y|ist))/i,
+  nuclear: /\b(nuclear|reactor|uranium|fission|fusion|smr\b|smrs\b|enrichment|tokamak|iter\b|radioactive|atomic energy|thorium)/i,
+  quantum: /\b(quantum|qubit|qubits|entanglement|post-quantum|qkd\b)/i,
+  military: /\b(military|defen[cs]e|pentagon|pla\b|missile|weapons?\b|army|navy|air force|warfare|nato\b|darpa|hypersonic|aircraft carrier|submarine|deterrence|drone strike)/i,
+  evs: /\b(ev\b|evs\b|electric vehicle|electric car|tesla|byd\b|nio\b|xpeng|li auto|zeekr|rivian|lucid motors|charging (station|network)|ev charging|plug-in|robotaxi|autonomous driving|self-driving car|lidar|gigafactory)/i,
+  materiales: /\b(rare earths?|lithium|cobalt|gallium|germanium|graphite|nickel|copper|critical minerals?|mining|miner|refining|smelt|magnets?\b|neodymium|tungsten|antimony|polysilicon)/i,
+  politica: /\b(export controls?|sanctions?|tariffs?|chips act|ai act|antitrust|regulation|regulator|ban(s|ned)?\b|blacklist|entity list|trade war|decoupl|de-risk|subsid(y|ies)|industrial policy|national security review)/i,
+  telecom: /\b(5g\b|6g\b|telecom|huawei|zte\b|ericsson|nokia|spectrum|broadband|undersea cables?|submarine cables?|fiber optic|starlink|satellite internet|base stations?)/i,
 };
 const REGION_KW = {
   china: /\b(china|chinese|beijing|shanghai|shenzhen|huawei|byd\b|alibaba|tencent|baidu|xiaomi|smic|taiwan|hong kong|xi jinping)/i,
@@ -689,7 +702,7 @@ function classifyTopic(t){
 }
 function classifyTopics(t){
   const out = [];
-  for(const k of ['chips','ia','robots','energia','bio','espacio','infra','ciencia']) if(TOPICS[k].test(t)) out.push(k);
+  for(const k of ['chips','ia','quantum','robots','energia','nuclear','evs','materiales','telecom','politica','bio','espacio','military','infra','ciencia']) if(TOPICS[k].test(t)) out.push(k);
   return out.length ? out : ['general'];
 }
 function classifyRegion(t, def){
@@ -710,7 +723,7 @@ function depthScore(title, desc, w){
   return Math.max(0, s);
 }
 
-const TOPIC_LABEL = {chips:'Chips',ia:'IA',robots:'Robótica',energia:'Energía',bio:'Bio/Med',espacio:'Espacio',infra:'Infra',ciencia:'Ciencia',general:'General'};
+const TOPIC_LABEL = {chips:'Chips',ia:'IA',quantum:'Quantum',robots:'Robótica',energia:'Energía',nuclear:'Nuclear',evs:'EVs',materiales:'Materiales',politica:'Política tech',telecom:'Telecom',bio:'Bio/Med',espacio:'Espacio',military:'Defensa',infra:'Infra',ciencia:'Ciencia',general:'General'};
 
 /* ---------- fetch + parse ---------- */
 async function fetchFeed(feed){
@@ -1068,6 +1081,7 @@ const GAP_TOPIC_Q = {
   robots:'robotics robots', energia:'energy power',
   bio:'biotech medicine', espacio:'space rockets satellites',
   infra:'infrastructure manufacturing', ciencia:'science research',
+  nuclear:'nuclear energy reactor', quantum:'quantum computing', military:'military defense technology', evs:'electric vehicles EV', materiales:'critical minerals rare earths', telecom:'telecom 5G connectivity', politica:'technology policy export controls',
 };
 const gapTried = new Set();
 const gapStatus = {};   // panel -> 'pending' | 'failed'
