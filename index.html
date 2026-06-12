@@ -570,48 +570,37 @@ const XACCOUNTS = [
    resuelve el channel_id automáticamente y lo recuerda.
    ========================================================= */
 const YTCHANNELS = [
-  {name:'Asianometry',        handle:'Asianometry'},        // semiconductores y tech asiática
-  {name:'Dwarkesh Podcast',   handle:'DwarkeshPatel'},      // entrevistas largas IA/progreso
-  {name:'Lex Fridman',        handle:'lexfridman'},
-  {name:'ColdFusion',         handle:'ColdFusion'},         // documentales tech/negocios
-  {name:'Undecided',          handle:'UndecidedMF'},        // energía y sustentabilidad
-  {name:'Real Engineering',   handle:'RealEngineering'},    // ingeniería e infraestructura
-  {name:'The B1M',            handle:'TheB1M'},             // megaconstrucción
-  {name:'CaspianReport',      handle:'CaspianReport'},      // geopolítica
-  {name:'Cyrus Janssen',      handle:'CyrusJanssen'},       // China
-  {name:'Relentless',         handle:'relentless'},
-  {name:'BYD Global',         handle:'BYDGlobal'},
-  {name:'Max & Noelia',       handle:'maxnoelia'},
-  {name:'Core Memory',        handle:'CoreMemoryPodcast'},
-  {name:'Bloomberg Originals', handle:'BloombergOriginals'},
-  {name:'DW Documental',      handle:'DWDocumental'},
-  {name:'Solkuno',            handle:'Solkuno'},
-  {name:'China Insights',     handle:'ChinaInsights'},
-  {name:'CNBC',               handle:'CNBC'},
-  {name:'CGTN',               handle:'CGTN'},
-  {name:'Richard Aguilar',    handle:'RichardAguilar'},
-  {name:'Tech Wave',          handle:'TechWave'},
-  {name:'StarTalk Plus',      handle:'StarTalkPlus'},
-  {name:'Rowan Cheung',       handle:'RowanCheung'},
-  {name:'Civil Mentors',      handle:'CivilMentors'},
-  {name:'Megaprojects and Places', handle:'MegaprojectsandPlaces'},
-  {name:'China Unpacked',     handle:'ChinaUnpacked'},
-  {name:'New China TV',       handle:'NewChinaTV'},
-  {name:'High Capacity',      handle:'HighCapacity'},
-  {name:'Hard Fork',          handle:'hardfork'},
-  {name:'Veritasium',         handle:'veritasium'},
+  // Formatos aceptados: {name, handle} · {name, id:'UC...'} · {name, playlist:'PL...'}
+  {name:'Morse',            handle:'ti_morse'},
+  {name:'BYD Global',       handle:'BYDGlobal'},
+  {name:'Max & Noelia',     handle:'maxynoelia1'},
+  {name:'Core Memory',      handle:'CoreMemoryPodcast'},
+  {name:'Bloomberg',        handle:'business'},
+  {name:'Solkuno',          handle:'solkuno'},
+  {name:'China Insight',    handle:'China_Insight_Docs'},
+  {name:'CNBC',             handle:'CNBC'},
+  {name:'CGTN',             handle:'cgtn'},
+  {name:'Richard Aguilar',  handle:'RichardAguilarChannel'},
+  {name:'Tech Wave',        handle:'techwave8335'},
+  {name:'StarTalk Plus',    handle:'StarTalkPlus'},
+  {name:'Rowan Cheung',     handle:'rowanch'},
+  {name:'Civil Mentors',    handle:'CivilMentors'},
+  {name:'Megaprojects',     handle:'megaprojects9649'},
+  {name:'China Unpacked',   handle:'ChinaUnpackedTV'},
+  {name:'China View',       handle:'ChinaViewTV'},
+  {name:'High Capacity',    handle:'HighCapacityPodcast'},
+  {name:'Hard Fork',        handle:'hardfork'},
+  {name:'Veritasium',       handle:'veritasium'},
   {name:'Wall Street Journal', handle:'wsj'},
-  {name:'CNA Insider',        handle:'CNAInsider'},
-  {name:'CSIS',               handle:'CSIS'},
-  {name:'Joe Scott',          handle:'joescott'},
+  {name:'The B1M',          handle:'TheB1M'},
+  {name:'CSIS',             handle:'csis'},
   {name:'Bloomberg Television', handle:'markets'},
-  {name:'Interesting Times',  handle:'InterestingTimesNYT'},
-  {name:'Financial Times',    handle:'FinancialTimes'},
-  {name:'BBC World Service',  handle:'BBCWorldService'},
-  {name:'CNA',                handle:'CNA'},
-  {name:'Astrum',             handle:'astrumspace'},
-  {name:'Celestium',          handle:'Celestium'},
-  {name:'Joanna Stern',       handle:'joannastern'},
+  {name:'Interesting Times', handle:'InterestingTimesNYT'},
+  {name:'Financial Times',  handle:'FinancialTimes'},
+  {name:'CNA',              handle:'channelnewsasia'},
+  {name:'Astrum',           handle:'astrumspace'},
+  {name:'Celestium',        handle:'Celestium1234'},
+  {name:'Joanna Stern',     handle:'JoannaStern'},
 ];
 
 /* Instancias Nitter/forks con RSS público (van en cascada) */
@@ -839,6 +828,7 @@ async function fetchX(acc){
 /* ---------- YouTube: resolver canal y leer su RSS oficial ---------- */
 const YTFAILED = [];
 async function fetchYT(ch){
+  if(ch.playlist) return fetchYTPlaylist(ch);
   const key = 'tfm3:yt:' + ch.handle;
   try{
     const cached = JSON.parse(localStorage.getItem(key) || 'null');
@@ -859,8 +849,8 @@ async function fetchYT(ch){
     }
   }
 
-  // 1) resolver channel_id (una sola vez, queda guardado)
-  let id = localStorage.getItem('tfm3:ytid:' + ch.handle);
+  // 1) resolver channel_id (una sola vez, queda guardado) — o usar el id directo si se configuró
+  let id = ch.id || localStorage.getItem('tfm3:ytid:' + ch.handle);
   if(!id){
     for(const proxy of proxyOrder(hashStr('yt'+ch.handle)).slice(0,3)){
       try{
@@ -914,12 +904,57 @@ async function fetchYT(ch){
   return out;
 }
 
+async function fetchYTPlaylist(ch){
+  const key = 'tfm3:ytpl:' + ch.playlist;
+  try{
+    const cached = JSON.parse(localStorage.getItem(key) || 'null');
+    if(cached && Date.now() - cached.t < CACHE_TTL_X){ return cached.items; }
+  }catch(e){}
+  const feedUrl = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' + ch.playlist;
+  let xml = null;
+  for(const proxy of proxyOrder(hashStr(feedUrl))){
+    try{
+      const r = await fetch(proxy(feedUrl), {signal: AbortSignal.timeout(9000)});
+      if(!r.ok) continue;
+      const t = unwrap(await r.text());
+      if(t && t.includes('<feed')){ xml = t; break; }
+    }catch(e){}
+  }
+  if(!xml){ YTFAILED.push({handle:'playlist?list=' + ch.playlist}); throw new Error('playlist sin señal'); }
+  const doc = new DOMParser().parseFromString(xml, 'text/xml');
+  const entries = [...doc.getElementsByTagName('entry')].slice(0, 15);
+  const out = entries.map(n => {
+    const get = tag => { const el = n.getElementsByTagName(tag)[0]; return el ? el.textContent.trim() : ''; };
+    const vid = get('yt:videoId');
+    const title = stripHTML(get('title'));
+    const authorEl = n.getElementsByTagName('author')[0];
+    const author = authorEl ? stripHTML((authorEl.getElementsByTagName('name')[0]||{}).textContent || '') : '';
+    const dateStr = get('published');
+    const date = dateStr ? new Date(dateStr).getTime() : Date.now();
+    const topics = classifyTopics(title);
+    return {
+      __k: 'ytpl:' + ch.playlist,
+      title, vid,
+      link: 'https://www.youtube.com/watch?v=' + vid,
+      desc: '', date,
+      source: (author || ch.name) + ' ◆',
+      panel: 'yt',
+      region: classifyRegion(title, 'global'),
+      topic: topics[0], topics,
+      score: 0,
+      isVideo: true,
+    };
+  }).filter(i => i.title && i.vid && !isNaN(i.date));
+  try{ localStorage.setItem(key, JSON.stringify({t: Date.now(), items: out})); }catch(e){}
+  return out;
+}
+
 /* concurrencia limitada */
 async function runQueue(queue, failed){
   const workers = Array.from({length:6}, async () => {
     while(queue.length){
       const job = queue.shift();
-      const jobKey = job.type === 'rss' ? job.f.url : (job.type === 'x' ? 'x:' + job.a.handle : 'yt:' + job.ch.handle);
+      const jobKey = job.type === 'rss' ? job.f.url : (job.type === 'x' ? 'x:' + job.a.handle : (job.ch.playlist ? 'ytpl:' + job.ch.playlist : 'yt:' + job.ch.handle));
       try{
         const items = job.type === 'rss' ? await fetchFeed(job.f) : (job.type === 'x' ? await fetchX(job.a) : await fetchYT(job.ch));
         ITEMS = ITEMS.filter(i => i.__k !== jobKey);
@@ -1174,6 +1209,11 @@ function renderX(tweets){
 
 function renderYT(videos){
   const el = $('#b-yt'); const c = $('#c-yt');
+  if(!YTCHANNELS.length){
+    el.innerHTML = '<div class="empty">Sin canales configurados aún — agrega canales en el arreglo YTCHANNELS del script.</div>';
+    c.textContent = '0';
+    return;
+  }
   // equilibrio: hasta 2 videos recientes por canal, luego por recencia
   const byCh = {};
   for(const v of videos){ (byCh[v.source] = byCh[v.source] || []).push(v); }
