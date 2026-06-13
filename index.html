@@ -577,36 +577,38 @@ const XACCOUNTS = [
    resuelve el channel_id automáticamente y lo recuerda.
    ========================================================= */
 const YTCHANNELS = [
-  // Formatos aceptados: {name, handle} · {name, id:'UC...'} · {name, playlist:'PL...'}
+  // Formatos: {name, handle} · {name, id:'UC...'} · {name, playlist:'PL...'}
+  // strict:true  → canal generalista: solo se muestran videos cuyo título toque tus temas.
+  // (sin strict) → canal de nicho: todos sus videos pasan.
   {name:'BYD Global',       handle:'BYDGlobal'},
   {name:'Max & Noelia',     handle:'maxynoelia1'},
   {name:'Core Memory',      handle:'CoreMemoryPodcast'},
-  {name:'Bloomberg',        handle:'business'},
+  {name:'Bloomberg',        handle:'business',                strict:true},
   {name:'Solkuno',          handle:'solkuno'},
   {name:'China Insight',    handle:'China_Insight_Docs'},
-  {name:'CNBC',             handle:'CNBC'},
-  {name:'CGTN',             handle:'cgtn'},
-  {name:'Richard Aguilar',  handle:'RichardAguilarChannel'},
+  {name:'CNBC',             handle:'CNBC',                    strict:true},
+  {name:'CGTN',             handle:'cgtn',                    strict:true},
+  {name:'Richard Aguilar',  handle:'RichardAguilarChannel',   strict:true},
   {name:'Tech Wave',        handle:'techwave8335'},
-  {name:'StarTalk Plus',    handle:'StarTalkPlus'},
+  {name:'StarTalk Plus',    handle:'StarTalkPlus',            strict:true},
   {name:'Rowan Cheung',     handle:'rowanch'},
-  {name:'Civil Mentors',    handle:'CivilMentors'},
+  {name:'Civil Mentors',    handle:'CivilMentors',            strict:true},
   {name:'Megaprojects',     handle:'megaprojects9649'},
   {name:'China Unpacked',   handle:'ChinaUnpackedTV'},
   {name:'China View',       handle:'ChinaViewTV'},
   {name:'High Capacity',    handle:'HighCapacityPodcast'},
   {name:'Hard Fork',        handle:'hardfork'},
-  {name:'Veritasium',       handle:'veritasium'},
-  {name:'Wall Street Journal', handle:'wsj'},
+  {name:'Veritasium',       handle:'veritasium',              strict:true},
+  {name:'Wall Street Journal', handle:'wsj',                  strict:true},
   {name:'The B1M',          handle:'TheB1M'},
-  {name:'CSIS',             handle:'csis'},
-  {name:'Bloomberg Television', handle:'markets'},
-  {name:'Interesting Times', handle:'InterestingTimesNYT'},
-  {name:'Financial Times',  handle:'FinancialTimes'},
-  {name:'CNA',              handle:'channelnewsasia'},
+  {name:'CSIS',             handle:'csis',                    strict:true},
+  {name:'Bloomberg Television', handle:'markets',             strict:true},
+  {name:'Interesting Times', handle:'InterestingTimesNYT',    strict:true},
+  {name:'Financial Times',  handle:'FinancialTimes',          strict:true},
+  {name:'CNA',              handle:'channelnewsasia',         strict:true},
   {name:'Astrum',           handle:'astrumspace'},
   {name:'Celestium',        handle:'Celestium1234'},
-  {name:'Joanna Stern',     handle:'JoannaStern'},
+  {name:'Joanna Stern',     handle:'JoannaStern',             strict:true},
 ];
 
 /* Instancias Nitter/forks con RSS público (van en cascada) */
@@ -838,6 +840,12 @@ async function fetchX(acc){
   return out;
 }
 
+/* un video pasa si el canal es de nicho, o si (siendo strict) su título toca un tema */
+function videoOnTopic(ch, topics){
+  if(!ch.strict) return true;
+  return topics.some(t => t !== 'general');
+}
+
 /* ---------- YouTube: resolver canal y leer su RSS oficial ---------- */
 const YTFAILED = [];
 async function fetchYT(ch){
@@ -899,6 +907,7 @@ async function fetchYT(ch){
     const dateStr = get('published');
     const date = dateStr ? new Date(dateStr).getTime() : Date.now();
     const topics = classifyTopics(title);
+    if(!videoOnTopic(ch, topics)) return null;
     return {
       __k: 'yt:' + ch.handle,
       title, vid,
@@ -912,7 +921,7 @@ async function fetchYT(ch){
       score: 0,
       isVideo: true,
     };
-  }).filter(i => i.title && i.vid && !isNaN(i.date));
+  }).filter(i => i && i.title && i.vid && !isNaN(i.date));
   try{ localStorage.setItem(key, JSON.stringify({t: Date.now(), items: out})); }catch(e){}
   return out;
 }
@@ -980,6 +989,65 @@ async function runQueue(queue, failed){
   });
   await Promise.all(workers);
   checkGaps();
+}
+
+/* =========================================================
+   MODO SERVIDOR — si existe feeds.json (generado por el
+   GitHub Action cada 30 min), la página carga UN archivo en
+   vez de 150 fuentes. Si falta o está viejo, cae al modo
+   en vivo de siempre.
+   ========================================================= */
+const STATIC_MAX_AGE = 3 * 3600 * 1000;   // si el JSON tiene >3 h, mejor modo en vivo
+async function loadStatic(){
+  try{
+    const r = await fetch('feeds.json?v=' + Date.now(), {cache:'no-store'});
+    if(!r.ok) return false;
+    const data = await r.json();
+    if(!data || !data.generated_at) return false;
+    if(Date.now() - data.generated_at > STATIC_MAX_AGE) return false;
+
+    ITEMS = []; XFAILED.length = 0; YTFAILED.length = 0;
+    for(const f of (data.rss||[])){
+      for(const i of (f.items||[])){
+        const blob = i.title + ' ' + (i.desc||'');
+        const topics = classifyTopics(blob);
+        ITEMS.push({__k:'s:'+f.feed.name, title:i.title, link:i.link, desc:i.desc||'', date:i.date,
+          source:f.feed.name, panel:f.feed.panel, region:classifyRegion(blob, f.feed.region),
+          topic:topics[0], topics, score:depthScore(i.title, i.desc||'', f.feed.w)});
+      }
+    }
+    for(const a of (data.x||[])){
+      for(const i of (a.items||[])){
+        const topics = classifyTopics(i.title);
+        ITEMS.push({__k:'sx:'+a.handle, title:i.title, link:i.link, desc:'', date:i.date,
+          source:a.name + ' · @' + a.handle, panel:'x', region:classifyRegion(i.title,'china'),
+          topic:topics[0], topics, score:0, isTweet:true});
+      }
+    }
+    const ytStrict = {};
+    YTCHANNELS.forEach(c => { if(c.strict) ytStrict[c.name] = true; });
+    for(const ch of (data.yt||[])){
+      for(const i of (ch.items||[])){
+        const topics = classifyTopics(i.title);
+        if(ytStrict[ch.name] && !topics.some(t => t !== 'general')) continue;
+        ITEMS.push({__k:'sy:'+ch.name, title:i.title, vid:i.vid,
+          link:'https://www.youtube.com/watch?v='+i.vid, desc:'', date:i.date,
+          source:(i.author ? i.author + ' ◆' : ch.name), panel:'yt',
+          region:classifyRegion(i.title,'global'), topic:topics[0], topics, score:0, isVideo:true});
+      }
+    }
+    if(data.fails){
+      (data.fails.x||[]).forEach(h => XFAILED.push({handle:h}));
+      (data.fails.yt||[]).forEach(h => YTFAILED.push({handle:h}));
+    }
+    const dt = new Date(data.generated_at);
+    $('#lastupdate').textContent = 'Datos del servidor: ' + dt.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+    $('#feedcount').textContent = 'Modo servidor · ' + (data.rss.length + data.x.length + data.yt.length) + ' fuentes';
+    setStatus('En línea', 'ok');
+    renderAll();
+    checkGaps();
+    return true;
+  }catch(e){ return false; }
 }
 
 let LOADING = false;
@@ -1319,12 +1387,14 @@ $('#b-yt').addEventListener('click', e => {
     'allowfullscreen></iframe>';
 });
 
-$('#refresh').addEventListener('click', () => loadAll(true));
+$('#refresh').addEventListener('click', async () => {
+  if(!(await loadStatic())) loadAll(true);
+});
 
 /* auto-refresh cada 30 min */
-setInterval(() => loadAll(false), 30*60*1000);
+setInterval(async () => { if(!(await loadStatic())) loadAll(false); }, 30*60*1000);
 
-loadAll(false);
+(async () => { if(!(await loadStatic())) loadAll(false); })();
 </script>
 </body>
 </html>
