@@ -312,6 +312,38 @@
   .ytmeta{font-family:var(--mono);font-size:10px;color:var(--muted)}
   .ytmeta .ytnew{color:#E5484D;font-weight:600;letter-spacing:.06em}
 
+  /* ---------- cola de lectura ---------- */
+  .savebtn{
+    background:none;border:none;cursor:pointer;
+    color:var(--muted);font-size:14px;line-height:1;padding:0 2px;margin-left:auto;
+    transition:color .15s, transform .15s;
+  }
+  .savebtn:hover{color:var(--eu);transform:scale(1.2)}
+  .savebtn.on{color:var(--eu)}
+  .item.tweet .savebtn{margin-left:auto}
+  .ytcard .savebtn{
+    position:absolute;top:6px;right:6px;z-index:2;margin:0;
+    width:28px;height:28px;border-radius:50%;
+    background:rgba(0,0,0,.6);color:#fff;font-size:14px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ytcard .savebtn:hover{background:rgba(0,0,0,.8);transform:scale(1.1)}
+  .ytcard .savebtn.on{color:var(--eu);background:rgba(0,0,0,.75)}
+  .savedpanel{border-color:var(--eu)}
+  .savedpanel .panel-h{background:linear-gradient(90deg,#241F12 0%, var(--panel2) 100%);border-bottom:1px solid #4A3D1E}
+  .savemark{
+    font-size:13px;width:24px;height:24px;line-height:24px;text-align:center;
+    color:#0D1219;background:var(--eu);border-radius:6px;flex:none;
+  }
+  .savedpanel h2{color:var(--eu)}
+  .clearsaved{
+    font-family:var(--mono);font-size:10px;letter-spacing:.06em;
+    background:none;border:1px solid var(--line);color:var(--muted);
+    padding:3px 10px;border-radius:3px;cursor:pointer;margin-left:8px;
+  }
+  .clearsaved:hover{border-color:var(--eu);color:var(--eu)}
+  .item.saved h3{font-size:14.5px}
+
   footer{
     max-width:1480px;margin:28px auto 0;padding:14px 24px;
     font-family:var(--mono);font-size:10px;color:var(--muted);
@@ -359,6 +391,12 @@
 
 
 <main>
+  <!-- Cola de lectura -->
+  <section class="panel savedpanel" id="savedpanel" style="display:none">
+    <div class="panel-h"><span class="savemark">★</span><h2>Para leer después</h2><span class="count" id="c-saved"></span><button class="clearsaved" id="clearsaved">Vaciar</button><span class="tog">▾</span></div>
+    <div class="panel-b" id="b-saved"></div>
+  </section>
+
   <!-- Signature: deep-read radar -->
   <section class="hero panel" id="hero">
     <div class="panel-h"><span class="accent" style="background:var(--depth)"></span><h2>A fondo hoy — radar de lecturas profundas</h2><span class="count" id="c-hero"></span></div>
@@ -602,7 +640,6 @@ const YTCHANNELS = [
   {name:'Wall Street Journal', handle:'wsj',                  strict:true},
   {name:'The B1M',          handle:'TheB1M'},
   {name:'CSIS',             handle:'csis',                    strict:true},
-  {name:'Bloomberg Television', handle:'markets',             strict:true},
   {name:'Interesting Times', handle:'InterestingTimesNYT',    strict:true},
   {name:'Financial Times',  handle:'FinancialTimes',          strict:true},
   {name:'CNA',              handle:'channelnewsasia',         strict:true},
@@ -674,6 +711,25 @@ const REGION_KW = {
 /* señales de profundidad en titular/descripcion */
 const DEPTH_POS = /\b(analysis|análisis|in-depth|deep dive|explained|explainer|inside|investigation|special report|report:|essay|interview|profile|the future of|the state of|how (the|a|china|america|europe)|why (the|a|china|america|europe)|what.{0,30}means|long read|opinion|perspective|q&a|guide to|anatomy of|case study|white paper)/i;
 const DEPTH_NEG = /\b(launches|launched|raises \$|announces|unveils|shares (rise|fall)|stock (jumps|falls)|earnings|quarterly|hits record|deal of the day|deals:|review:|rumor)/i;
+
+/* ---------- cola de lectura (localStorage) ---------- */
+let SAVED = {};
+try{ SAVED = JSON.parse(localStorage.getItem('tfm:saved') || '{}'); }catch(e){ SAVED = {}; }
+function saveKey(it){ return it.link; }
+function isSaved(it){ return !!SAVED[saveKey(it)]; }
+function persistSaved(){ try{ localStorage.setItem('tfm:saved', JSON.stringify(SAVED)); }catch(e){} }
+function toggleSaved(link){
+  if(SAVED[link]){ delete SAVED[link]; }
+  else {
+    const it = ITEMS.find(i => i.link === link);
+    if(!it) return;
+    SAVED[link] = {link:it.link, title:it.title, source:it.source, date:it.date,
+                   region:it.region, isVideo:!!it.isVideo, isTweet:!!it.isTweet, vid:it.vid||'',
+                   savedAt:Date.now()};
+  }
+  persistSaved();
+  renderAll();
+}
 
 /* ---------- estado ---------- */
 let ITEMS = [];
@@ -1109,6 +1165,10 @@ function depthBar(score){
   return h + '</span>';
 }
 
+function saveBtn(it){
+  const on = isSaved(it);
+  return `<button class="savebtn${on?' on':''}" data-save="${esc(it.link)}" title="${on?'Quitar de la cola':'Guardar para leer después'}" aria-label="Guardar">${on?'★':'☆'}</button>`;
+}
 function itemHTML(it, big){
   const deep = it.score >= 4;
   const fresh = (Date.now() - it.date) < 6*3600*1000;
@@ -1120,6 +1180,7 @@ function itemHTML(it, big){
       <span class="tag">${TOPIC_LABEL[it.topic]||it.topic}</span>
       ${deep ? '<span class="badge">A FONDO</span>' : ''}
       ${depthBar(it.score)}
+      ${saveBtn(it)}
     </div>
     <h3><a href="${esc(it.link)}" target="_blank" rel="noopener">${esc(it.title)}</a></h3>
     ${it.desc ? `<p>${esc(it.desc.slice(0, big?320:220))}</p>` : ''}
@@ -1247,6 +1308,29 @@ function renderAll(){
 
   // Pulso temático
   renderTopicCounts();
+
+  // Cola de lectura
+  renderSaved();
+}
+
+function renderSaved(){
+  const panel = $('#savedpanel'), el = $('#b-saved'), c = $('#c-saved');
+  const list = Object.values(SAVED).sort((a,b)=>b.savedAt-a.savedAt);
+  if(!list.length){ panel.style.display = 'none'; return; }
+  panel.style.display = '';
+  c.textContent = list.length;
+  el.innerHTML = list.map(s => {
+    const kind = s.isVideo ? 'Video' : (s.isTweet ? 'Post' : 'Artículo');
+    return `<article class="item saved r-${s.region||'global'}">
+      <div class="meta">
+        <span class="src">${esc(s.source||'')}</span>
+        <span class="tag">${kind}</span>
+        <span>guardado ${timeAgo(s.savedAt)}</span>
+        <button class="savebtn on" data-save="${esc(s.link)}" title="Quitar de la cola" aria-label="Quitar">★</button>
+      </div>
+      <h3><a href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.title)}</a></h3>
+    </article>`;
+  }).join('');
 }
 
 function renderX(tweets){
@@ -1274,6 +1358,7 @@ function renderX(tweets){
         <span class="handle">${esc(handle)}</span>
         <span>${timeAgo(t.date)}</span>
         ${(Date.now()-t.date) < 6*3600*1000 ? '<span class="newdot">NUEVO</span>' : ''}
+        ${saveBtn(t)}
       </div>
       <p class="tw"><a href="${esc(t.link)}" target="_blank" rel="noopener">${esc(t.title.slice(0,360))}</a></p>
       <a class="xgo" href="${esc(t.link)}" target="_blank" rel="noopener">Ver en X ↗</a>
@@ -1303,7 +1388,15 @@ function renderYT(videos){
   for(const arr of Object.values(byCh)) picked.push(...arr.slice(0,2));
   const inPicked = new Set(picked);
   const fill = videos.filter(v => !inPicked.has(v));
-  videos = picked.sort((a,b)=>b.date-a.date).concat(fill).slice(0,48);
+  videos = picked.sort((a,b)=>b.date-a.date).concat(fill);
+  // deduplicar: mismo videoId o mismo título (distintos canales resuben igual)
+  const seenV = new Set();
+  videos = videos.filter(v => {
+    const k1 = v.vid;
+    const k2 = (v.title||'').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,60);
+    if(seenV.has(k1) || seenV.has(k2)) return false;
+    seenV.add(k1); seenV.add(k2); return true;
+  }).slice(0,48);
   let html = '';
   if(videos.length){
     html = '<div class="ytgrid">' + videos.map(v => `
@@ -1311,6 +1404,7 @@ function renderYT(videos){
         <span class="thumbwrap" data-vid="${esc(v.vid)}" role="button" tabindex="0" title="Reproducir aquí">
           <img class="thumb" loading="lazy" src="https://i.ytimg.com/vi/${esc(v.vid)}/mqdefault.jpg" alt="">
           <span class="play">▶</span>
+          ${saveBtn(v)}
         </span>
         <a class="yttitle" href="${esc(v.link)}" target="_blank" rel="noopener">${esc(v.title)}</a>
         <span class="ytmeta">${esc(v.source)} · ${timeAgo(v.date)}${(Date.now()-v.date) < 24*3600*1000 ? ' · <b class="ytnew">NUEVO</b>' : ''} · <a class="ytout" href="${esc(v.link)}" target="_blank" rel="noopener">YouTube ↗</a></span>
@@ -1385,6 +1479,14 @@ $('#b-yt').addEventListener('click', e => {
     '?autoplay=1&rel=0" title="Video" frameborder="0" ' +
     'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
     'allowfullscreen></iframe>';
+});
+
+document.body.addEventListener('click', e => {
+  const b = e.target.closest('.savebtn');
+  if(b){ e.preventDefault(); e.stopPropagation(); toggleSaved(b.dataset.save); }
+});
+$('#clearsaved').addEventListener('click', () => {
+  if(confirm('¿Vaciar toda la cola de lectura?')){ SAVED = {}; persistSaved(); renderAll(); }
 });
 
 $('#refresh').addEventListener('click', async () => {
