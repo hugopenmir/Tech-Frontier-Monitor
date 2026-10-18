@@ -1,0 +1,228 @@
+[
+  {
+    "id": "ai-science",
+    "name": "IA científica / modelos",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%28AI%20science%20OR%20DeepSeek%20OR%20Qwen%20OR%20scientific%20AI%20OR%20model%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (AI science OR DeepSeek OR Qwen OR scientific AI OR model) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "chips",
+    "name": "Chips / fabricación / cómputo",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%28semiconductors%20OR%20lithography%20OR%20Ascend%20OR%20computing%20cluster%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (semiconductors OR lithography OR Ascend OR computing cluster) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "robotics",
+    "name": "Robótica / humanoides",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%28humanoid%20robots%20OR%20embodied%20AI%20OR%20robotics%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (humanoid robots OR embodied AI OR robotics) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "space",
+    "name": "Espacio / orbital computing",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%28orbital%20computing%20OR%20rocket%20OR%20lunar%20OR%20space%20station%20OR%20satellite%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (orbital computing OR rocket OR lunar OR space station OR satellite) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "fusion-energy",
+    "name": "Energía / fusión",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%28nuclear%20fusion%20OR%20tokamak%20OR%20EAST%20OR%20batteries%20OR%20solar%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (nuclear fusion OR tokamak OR EAST OR batteries OR solar) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "quantum",
+    "name": "Computación cuántica",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%28quantum%20computer%20OR%20quantum%20chip%20OR%20qubits%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (quantum computer OR quantum chip OR qubits) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "mobility",
+    "name": "Ferrocarril / AI transport",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%28CR450%20OR%20maglev%20OR%20ultra%20high%20speed%20rail%20OR%20smart%20highways%20OR%20autonomous%20vehicles%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (CR450 OR maglev OR ultra high speed rail OR smart highways OR autonomous vehicles) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "smart-cities",
+    "name": "Ciudades inteligentes / verdes",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%28smart%20city%20OR%20green%20city%20OR%20zero%20carbon%20OR%20urban%20brain%20OR%20digital%20twin%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (smart city OR green city OR zero carbon OR urban brain OR digital twin) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "6g-networks",
+    "name": "Conectividad / 6G / data centers",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%286G%20OR%20data%20center%20OR%20east%20data%20west%20computing%20OR%20AI%20infrastructure%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (6G OR data center OR east data west computing OR AI infrastructure) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "biotech",
+    "name": "Biotecnología / BCI",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%28biotech%20OR%20brain%20computer%20interface%20OR%20gene%20editing%20OR%20drug%20discovery%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (biotech OR brain computer interface OR gene editing OR drug discovery) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "materials",
+    "name": "Materiales avanzados / manufactura",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%28advanced%20materials%20OR%20perovskite%20OR%20manufacturing%20breakthroughs%20OR%20rare%20earths%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (advanced materials OR perovskite OR manufacturing breakthroughs OR rare earths) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "universities",
+    "name": "Universidades / laboratorios",
+    "url": "https://news.google.com/rss/search?q=%28China%20OR%20Chinese%29%20%28research%20laboratory%20OR%20new%20science%20campus%20OR%20research%20institute%20OR%20big%20science%20facility%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "(China OR Chinese) (research laboratory OR new science campus OR research institute OR big science facility) when:14d",
+    "notes": "Google News RSS: discovery channel; open and verify original source"
+  },
+  {
+    "id": "nature",
+    "name": "Nature — Research Highlights",
+    "url": "https://www.nature.com/nature.rss",
+    "tier": "paper",
+    "enabled": true,
+    "frequency": "daily",
+    "notes": "RSS candidate URL; actual connectivity monitored per execution; may fail or change without warning"
+  },
+  {
+    "id": "science-daily",
+    "name": "ScienceDaily — Science News",
+    "url": "https://www.sciencedaily.com/rss/top/science.xml",
+    "tier": "press",
+    "enabled": true,
+    "frequency": "daily",
+    "notes": "RSS candidate URL; actual connectivity monitored per execution; may fail or change without warning"
+  },
+  {
+    "id": "globaltimes",
+    "name": "Global Times — China",
+    "url": "https://www.globaltimes.cn/rss/outbrain.xml",
+    "tier": "press",
+    "enabled": true,
+    "frequency": "daily",
+    "notes": "RSS candidate URL; actual connectivity monitored per execution; may fail or change without warning"
+  },
+  {
+    "id": "scmp",
+    "name": "SCMP — China",
+    "url": "https://www.scmp.com/rss/91/feed",
+    "tier": "press",
+    "enabled": true,
+    "frequency": "daily",
+    "notes": "RSS candidate URL; actual connectivity monitored per execution; may fail or change without warning"
+  },
+  {
+    "id": "miit-gov",
+    "name": "MIIT · industria, chips y 6G",
+    "url": "https://news.google.com/rss/search?q=site%3Amiit.gov.cn%20%28%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%20OR%20%E9%87%8F%E5%AD%90%20OR%20%E5%8D%8A%E5%AF%BC%E4%BD%93%20OR%206G%20OR%20%E5%B7%A5%E4%B8%9A%E4%BA%92%E8%81%94%E7%BD%91%29%20when%3A21d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "site:miit.gov.cn (人工智能 OR 量子 OR 半导体 OR 6G OR 工业互联网) when:21d",
+    "notes": "Consulta dirigida en agregador de noticias, NO RSS oficial del organismo; verificar URL, origen y contenido"
+  },
+  {
+    "id": "cas-labs",
+    "name": "CAS · laboratorios y ciencia",
+    "url": "https://news.google.com/rss/search?q=site%3Acas.cn%20%28%E6%A0%B8%E8%81%9A%E5%8F%98%20OR%20%E9%87%8F%E5%AD%90%20OR%20%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%20OR%20%E8%88%AA%E5%A4%A9%20OR%20%E7%A7%91%E5%AD%A6%E8%A3%85%E7%BD%AE%29%20when%3A21d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "site:cas.cn (核聚变 OR 量子 OR 人工智能 OR 航天 OR 科学装置) when:21d",
+    "notes": "Consulta dirigida en agregador de noticias, NO RSS oficial del organismo; verificar URL, origen y contenido"
+  },
+  {
+    "id": "gov-plans",
+    "name": "Gobierno chino · planes y programas",
+    "url": "https://news.google.com/rss/search?q=site%3Agov.cn%20%28%E5%8D%81%E4%BA%94%E4%BA%94%20OR%20%E8%81%9A%E5%8F%98%20OR%20%E9%87%8F%E5%AD%90%20OR%20%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%20OR%206G%20OR%20%E5%8D%AB%E6%98%9F%29%20when%3A21d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "site:gov.cn (十五五 OR 聚变 OR 量子 OR 人工智能 OR 6G OR 卫星) when:21d",
+    "notes": "Consulta dirigida en agregador de noticias, NO RSS oficial del organismo; verificar URL, origen y contenido"
+  },
+  {
+    "id": "cgtn",
+    "name": "CGTN · tecnología china",
+    "url": "https://news.google.com/rss/search?q=site%3Acgtn.com%20%28China%20OR%20Chinese%29%20%28technology%20OR%20robot%20OR%20fusion%20OR%20space%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "site:cgtn.com (China OR Chinese) (technology OR robot OR fusion OR space) when:14d",
+    "notes": "Consulta dirigida en agregador de noticias, NO RSS oficial del organismo; verificar URL, origen y contenido"
+  },
+  {
+    "id": "cctv",
+    "name": "CCTV / 央视 · ciencia",
+    "url": "https://news.google.com/rss/search?q=site%3Acctv.com%20%28%E7%A7%91%E6%8A%80%20OR%20%E6%9C%BA%E5%99%A8%E4%BA%BA%20OR%20%E9%87%8F%E5%AD%90%20OR%20%E8%88%AA%E5%A4%A9%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "site:cctv.com (科技 OR 机器人 OR 量子 OR 航天) when:14d",
+    "notes": "Consulta dirigida en agregador de noticias, NO RSS oficial del organismo; verificar URL, origen y contenido"
+  },
+  {
+    "id": "reuters",
+    "name": "Reuters · tecnología China",
+    "url": "https://news.google.com/rss/search?q=site%3Areuters.com%20%28China%20OR%20Chinese%29%20%28technology%20OR%20robots%20OR%20fusion%20OR%20chips%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "site:reuters.com (China OR Chinese) (technology OR robots OR fusion OR chips) when:14d",
+    "notes": "Consulta dirigida en agregador de noticias, NO RSS oficial del organismo; verificar URL, origen y contenido"
+  },
+  {
+    "id": "globaltimes-search",
+    "name": "Global Times · tecnología China",
+    "url": "https://news.google.com/rss/search?q=site%3Aglobaltimes.cn%20%28science%20OR%20fusion%20OR%20technology%20OR%20spacecraft%29%20when%3A14d&hl=en-US&gl=US&ceid=US:en",
+    "tier": "discovery",
+    "enabled": true,
+    "frequency": "daily",
+    "query": "site:globaltimes.cn (science OR fusion OR technology OR spacecraft) when:14d",
+    "notes": "Consulta dirigida en agregador de noticias, NO RSS oficial del organismo; verificar URL, origen y contenido"
+  }
+]

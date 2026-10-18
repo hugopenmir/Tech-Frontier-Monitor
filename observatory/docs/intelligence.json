@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "last_checked": null,
+  "last_successful_sources": 0,
+  "sources_total": 23,
+  "new_candidates_this_run": 0,
+  "items": [
+    {
+      "title": "China propone ampliar controles a la exportación de tecnologías de IA, biotecnología y energía solar",
+      "url": "https://www.reuters.com/world/asia-pacific/china-proposes-adding-40-ai-biotech-solar-technologies-export-control-list-2026-10-16/",
+      "published": "2026-10-16",
+      "excerpt": "Una propuesta regulatoria afecta transferencias de tecnologías avanzadas; la consulta pública continúa. No equivale a prohibición definitiva.",
+      "domain": "IA",
+      "signal_type": "regulación",
+      "source_id": "editorial-reuters",
+      "source_name": "Reuters",
+      "source_tier": "press",
+      "source_kind": "prensa",
+      "verification": "pendiente",
+      "maturity_change": false,
+      "risk_note": "Se trata de una propuesta regulatoria; comprobar texto oficial y estado de aprobación.",
+      "detected": "2026-10-18T17:55:00Z",
+      "review": "pendiente",
+      "project_id": null,
+      "id": "269b900bc2d1e4dd64ab"
+    },
+    {
+      "title": "China propone controles a exportaciones de tecnologías avanzadas de fabricación solar",
+      "url": "https://www.reuters.com/business/autos-transportation/china-proposes-export-controls-solar-manufacturing-technologies-2026-10-18/",
+      "published": "2026-10-18",
+      "excerpt": "Propuesta sobre tecnologías fotovoltaicas y transferencia; separar borradores regulatorios de requisitos ya vigentes.",
+      "domain": "Energía",
+      "signal_type": "regulación",
+      "source_id": "editorial-reuters",
+      "source_name": "Reuters",
+      "source_tier": "press",
+      "source_kind": "prensa",
+      "verification": "pendiente",
+      "maturity_change": false,
+      "risk_note": "Revisar la propuesta oficial y la consulta pública. No registrar como capacidad técnica demostrada.",
+      "detected": "2026-10-18T17:55:00Z",
+      "review": "pendiente",
+      "project_id": null,
+      "id": "f2c8d75a6acfb0805c81"
+    }
+  ],
+  "source_health": [],
+  "disclaimer": "2 manually curated initial examples. No automated collection has been executed. Candidates are not evidence validation.",
+  "seed_note": "Fuentes verificadas manualmente el 18 oct 2026. La recopilación externa automática comenzará solo cuando se ejecute el motor con internet."
+}
