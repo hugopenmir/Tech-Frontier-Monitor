@@ -1,0 +1,35 @@
+name: China 2035 · Intelligence Engine
+on:
+  schedule:
+    - cron: '15 13,23 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: china2035-intelligence
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test intelligence engine
+        working-directory: observatory
+        run: python -m unittest discover -s tests -v
+      - name: Collect evidence candidates
+        working-directory: observatory
+        run: python engine/collect.py --days 21
+      - name: Commit source updates without touching original tracker
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add observatory/docs/intelligence.json observatory/docs/ingestion_history.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'china2035: refresh research candidates'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
