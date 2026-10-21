@@ -1,0 +1,192 @@
+{
+  "module": "China 2035 — Economic Resilience & Japanification Radar",
+  "version": "1.0",
+  "as_of": "2026-10-20",
+  "horizon": "2035",
+  "update_policy": "monthly_manual_review",
+  "is_automated": false,
+  "methodology": "Probabilidades de juicio analítico; no representan pronósticos estadísticos ni estimaciones institucionales. No cambiar porcentajes automáticamente al recibir noticias. Exigir evidencia verificable, fecha y comparación con lectura anterior.",
+  "scenarios": [
+    {
+      "id": "renacimiento",
+      "name": "Renacimiento económico",
+      "probability_pct": 20,
+      "description": "Reequilibrio hacia ingresos familiares, confianza y consumo sostenidos, sin perder competitividad tecnológica."
+    },
+    {
+      "id": "dos_velocidades",
+      "name": "China de dos velocidades",
+      "probability_pct": 55,
+      "description": "Continúa el liderazgo industrial y exportador, pero con demanda doméstica y prosperidad familiar relativamente débiles."
+    },
+    {
+      "id": "japonizacion",
+      "name": "Japonización prolongada",
+      "probability_pct": 25,
+      "description": "Demanda crónicamente débil, presión deflacionaria, endeudamiento y bajos retornos de inversión."
+    }
+  ],
+  "economists": [
+    {
+      "institution": "Goldman Sachs",
+      "people": "Andrew Tilton / Hui Shan",
+      "focus": "Competitividad manufacturera, participación exportadora, Japanisation Index y pronósticos de PIB.",
+      "latest_verified_forecast": null,
+      "review_status": "Por verificar en próxima revisión"
+    },
+    {
+      "institution": "UBS",
+      "people": "Equipo de economía china",
+      "focus": "Recuperación de confianza, inmobiliario y contribución de nuevas industrias.",
+      "latest_verified_forecast": null,
+      "review_status": "Por verificar en próxima revisión"
+    },
+    {
+      "institution": "Macquarie",
+      "people": "Larry Hu",
+      "focus": "Margen de estímulo, cuota exportadora, inversión y saneamiento inmobiliario.",
+      "latest_verified_forecast": null,
+      "review_status": "Por verificar en próxima revisión"
+    },
+    {
+      "institution": "FMI",
+      "people": "Equipo China / WEO",
+      "focus": "Reequilibrio hacia consumo, protección social, deuda, riesgos deflacionarios y crecimiento potencial.",
+      "latest_verified_forecast": null,
+      "review_status": "Por verificar en próxima revisión"
+    }
+  ],
+  "indicators": [
+    {
+      "id": "household_consumption",
+      "category": "Demanda final",
+      "name": "Consumo de hogares / PIB",
+      "direction": "Alza sostenible",
+      "baseline_value": null,
+      "frequency": "Anual",
+      "status": "Pendiente de validación",
+      "source_priority": "NBS, FMI, Banco Mundial"
+    },
+    {
+      "id": "retail_sales",
+      "category": "Demanda final",
+      "name": "Ventas minoristas reales y nominales",
+      "direction": "Aceleración sostenida",
+      "baseline_value": null,
+      "frequency": "Mensual",
+      "status": "Pendiente de validación",
+      "source_priority": "NBS"
+    },
+    {
+      "id": "disposable_income",
+      "category": "Prosperidad",
+      "name": "Ingreso disponible real per cápita",
+      "direction": "Acelera con base amplia",
+      "baseline_value": null,
+      "frequency": "Trimestral",
+      "status": "Pendiente de validación",
+      "source_priority": "NBS"
+    },
+    {
+      "id": "consumer_confidence",
+      "category": "Prosperidad",
+      "name": "Confianza del consumidor",
+      "direction": "Recuperación persistente",
+      "baseline_value": null,
+      "frequency": "Mensual",
+      "status": "Pendiente de validación",
+      "source_priority": "NBS"
+    },
+    {
+      "id": "youth_jobs",
+      "category": "Empleo",
+      "name": "Desempleo juvenil y calidad del empleo",
+      "direction": "Baja con salarios al alza",
+      "baseline_value": "18.9% (agosto 2026; citado en artículo del usuario)",
+      "frequency": "Mensual",
+      "status": "Validación independiente pendiente",
+      "source_priority": "NBS"
+    },
+    {
+      "id": "housing_sales",
+      "category": "Inmobiliario",
+      "name": "Ventas de vivienda y precios de segunda mano",
+      "direction": "Estabilización multitrimestral",
+      "baseline_value": null,
+      "frequency": "Mensual",
+      "status": "Pendiente de validación",
+      "source_priority": "NBS / informes municipales"
+    },
+    {
+      "id": "housing_starts",
+      "category": "Inmobiliario",
+      "name": "Inicios de construcción residencial",
+      "direction": "Estabilización desde mínimo",
+      "baseline_value": "-78% frente al máximo (Macquarie, citado en artículo del usuario)",
+      "frequency": "Mensual",
+      "status": "Validación independiente pendiente",
+      "source_priority": "NBS / Macquarie"
+    },
+    {
+      "id": "prices",
+      "category": "Deflación",
+      "name": "IPC subyacente y precios industriales",
+      "direction": "Inflación positiva moderada sin choque de oferta",
+      "baseline_value": null,
+      "frequency": "Mensual",
+      "status": "Pendiente de validación",
+      "source_priority": "NBS"
+    },
+    {
+      "id": "credit",
+      "category": "Balance",
+      "name": "Crédito a hogares y préstamos bancarios",
+      "direction": "Demanda privada recuperada",
+      "baseline_value": "Préstamos en RMB +4.8% interanual (septiembre 2026; artículo del usuario)",
+      "frequency": "Mensual",
+      "status": "Validación independiente pendiente",
+      "source_priority": "PBoC"
+    },
+    {
+      "id": "local_debt",
+      "category": "Balance",
+      "name": "Deuda local y financiación LGFV",
+      "direction": "Menor presión sin asfixiar actividad",
+      "baseline_value": null,
+      "frequency": "Trimestral",
+      "status": "Pendiente de validación",
+      "source_priority": "MOF / FMI"
+    },
+    {
+      "id": "exports",
+      "category": "Sector exterior",
+      "name": "Exportaciones reales y dependencia de demanda externa",
+      "direction": "Crecimiento sin sobrecapacidad persistente",
+      "baseline_value": null,
+      "frequency": "Mensual",
+      "status": "Pendiente de validación",
+      "source_priority": "Aduanas / FMI"
+    },
+    {
+      "id": "profitability",
+      "category": "Retornos",
+      "name": "Rentabilidad industrial, utilización de capacidad y retorno sobre inversión",
+      "direction": "Márgenes y rendimientos mejoran",
+      "baseline_value": null,
+      "frequency": "Mensual / trimestral",
+      "status": "Pendiente de validación",
+      "source_priority": "NBS / reportes corporativos"
+    }
+  ],
+  "review_template": [
+    "Fecha de corte",
+    "Pronóstico previo y nuevo por institución",
+    "Variación versus lectura anterior",
+    "Evidencia doméstica: ingresos, empleo, consumo y confianza",
+    "Evidencia inmobiliaria y crediticia",
+    "Evidencia industrial/exportadora y rentabilidad",
+    "Probabilidades 2035 y justificación",
+    "Fuentes primarias y enlaces"
+  ],
+  "provenance": "Incorporado por solicitud del usuario; baseline probabilístico establecido en conversación. Las cifras extraídas de artículo proporcionado por el usuario no se presentan como verificadas independientemente."
+}
