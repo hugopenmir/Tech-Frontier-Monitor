@@ -2,6 +2,15 @@
 
 A research-dashboard prototype and **working candidate-feed ingestion pipeline**. It preserves the original 26 curated dossiers, Frontier Atlas, Technology Race and 2035 Simulator.
 
+## Economic Resilience / Japanification Radar (20 October 2026)
+
+- New **Economic Resilience** navigation tab in `docs/index.html`; linked to the original **China 2035 Master Tracker** in Drive.
+- Twelve leading indicators track household consumption/income/confidence, jobs, housing, credit, local debt, external demand, industrial margins and overcapacity.
+- Three **analyst-assigned, non-institutional** 2035 baseline scenarios: *renacimiento económico 20%*, *China de dos velocidades 55%*, *japonización prolongada 25%*. These are subjective, not output from a calibrated statistical model.
+- Watchlist for Goldman Sachs, UBS, Macquarie and IMF. Future forecast values are intentionally empty pending dated source verification.
+- Machine-readable schema: `docs/economic_radar.json`. It is a **manual monthly-review baseline**, not an automated series or evidence of ongoing monitoring; no GitHub Actions job is claimed for this macro module.
+- Macro tracker and original technology dossiers are methodologically separate: production/export signals cannot by themselves validate improved household prosperity.
+
 ## What works now
 
 - Research inbox with search, category filters, review state, links and per-browser project linking.
