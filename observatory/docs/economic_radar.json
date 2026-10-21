@@ -168,6 +168,24 @@
       "source_priority": "Aduanas / FMI"
     },
     {
+      "id": "chinese_global_brand_competitiveness",
+      "category": "Sector exterior",
+      "name": "Chinese Global Brand Competitiveness — calidad, reputación y poder de fijación de precios",
+      "direction": "Mayor reconocimiento por calidad y rendimiento, márgenes internacionales y capacidad de cobrar precios premium; verificar su efecto en salarios e ingresos reales",
+      "baseline_value": null,
+      "frequency": "Semestral",
+      "status": "Indicador editorial (no meta oficial); caso cualitativo de octubre 2026, sin línea base nacional comparable",
+      "source_priority": "Pruebas técnicas independientes, reportes corporativos de ventas y márgenes internacionales, estudios de marca comparables",
+      "official_target": false,
+      "links_to": "Household Prosperity: salarios reales vs productividad, ingreso disponible real per cápita y consumo familiar / PIB",
+      "observation_2026": "Bloomberg destaca Viltrox y Dynafish como ejemplos de transición de la ventaja de precio hacia calidad competitiva; dos casos no prueban cambio generalizado ni prosperidad familiar.",
+      "sources": [
+        "https://www.bloomberg.com/news/articles/2026-10-21/viltrox-lenses-dyna-shoes-prove-made-in-china-can-mean-quality",
+        "https://www.digitalcameraworld.com/news/chinese-lens-manufacturers-have-started-to-outdo-the-japanese-ones",
+        "https://www.roadtrailrun.com/2026/01/dynaflish-xiaonian-review-3-comparisons.html"
+      ]
+    },
+    {
       "id": "profitability",
       "category": "Retornos",
       "name": "Rentabilidad industrial, utilización de capacidad y retorno sobre inversión",
