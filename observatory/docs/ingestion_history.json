@@ -223,6 +223,13 @@
       "successful_sources": 23,
       "failed_sources": 0,
       "candidate_total": 664
+    },
+    {
+      "time": "2026-11-04T03:00:39Z",
+      "new_candidates": 11,
+      "successful_sources": 23,
+      "failed_sources": 0,
+      "candidate_total": 675
     }
   ]
 }
