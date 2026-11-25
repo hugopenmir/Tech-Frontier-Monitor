@@ -121,13 +121,15 @@ def write_json(path,data):
  path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
  path.write_text(json.dumps(data,ensure_ascii=False,indent=2,sort_keys=False)+'\n',encoding='utf8')
 
-def process(sources_path=DEFAULT_SOURCES, outdir=DOCS, fixtures=None,days=21,verbose=False):
+def process(sources_path=DEFAULT_SOURCES, outdir=DOCS, fixtures=None,days=21,verbose=False,*,reference_date=None):
  outdir=Path(outdir)
  sources=load_json(sources_path,[])
  prev=load_json(outdir/'intelligence.json',{'items':[]})
  items={i['id']:i for i in prev.get('items',[]) if i.get('id')}
  # Preserve existing editorial review flags if a candidate is encountered again.
- health=[];added=[];now=dt.datetime.now(dt.timezone.utc)
+ health=[];added=[]
+ # Production uses today's UTC date; fixture tests can pin the age window.
+ as_of=reference_date if reference_date is not None else dt.datetime.now(dt.timezone.utc).date()
  for source in sources:
   if not source.get('enabled',True):continue
   try:
@@ -144,7 +146,7 @@ def process(sources_path=DEFAULT_SOURCES, outdir=DOCS, fixtures=None,days=21,ver
     # Age-gate: old publications are not "new" on initial backfill.
     if rawitem['published']:
      try:
-      delta=(now.date()-dt.date.fromisoformat(rawitem['published'])).days
+      delta=(as_of-dt.date.fromisoformat(rawitem['published'])).days
       if delta < -1 or delta > days:continue
      except Exception:pass
     item=classify(rawitem,source)
