@@ -1,3 +1,4 @@
+import datetime as dt
 import json
 import sys
 from pathlib import Path
@@ -20,13 +21,21 @@ class PipelineTests(unittest.TestCase):
   with TemporaryDirectory() as temp:
    t=Path(temp);src=t/'sources.json';source=[{'id':'ai-science','name':'AI','tier':'discovery'},{'id':'quantum','name':'Quantum','tier':'paper'}]
    src.write_text(json.dumps(source));d=t/'docs'
-   a=process(src,d,ROOT/'fixtures');self.assertEqual(a['new_candidates_this_run'],2)
+   reference_date=dt.date(2026,10,19)
+   a=process(src,d,ROOT/'fixtures',reference_date=reference_date);self.assertEqual(a['new_candidates_this_run'],2)
    self.assertEqual(len(a['items']),2)
-   b=process(src,d,ROOT/'fixtures');self.assertEqual(b['new_candidates_this_run'],0)
+   b=process(src,d,ROOT/'fixtures',reference_date=reference_date);self.assertEqual(b['new_candidates_this_run'],0)
    self.assertEqual(len(b['items']),2)
    self.assertEqual(len(json.loads((d/'ingestion_history.json').read_text())['runs']),2)
    self.assertTrue(all(x['verification']=='pendiente' for x in b['items']))
    self.assertTrue(all(x['maturity_change'] is False for x in b['items']))
+ def test_reference_date_keeps_age_limit(self):
+  with TemporaryDirectory() as temp:
+   t=Path(temp);src=t/'sources.json'
+   src.write_text(json.dumps([{'id':'ai-science','name':'AI','tier':'discovery'},{'id':'quantum','name':'Quantum','tier':'paper'}]))
+   a=process(src,t/'docs',ROOT/'fixtures',reference_date=dt.date(2026,11,8))
+   self.assertEqual(a['new_candidates_this_run'],1)
+   self.assertEqual(a['items'][0]['published'],'2026-10-18')
  def test_failed_sources_reported(self):
   with TemporaryDirectory() as temp:
    t=Path(temp);src=t/'sources.json';src.write_text(json.dumps([{'id':'missing','name':'Missing','tier':'press'}]))
